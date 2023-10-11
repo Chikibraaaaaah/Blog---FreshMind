@@ -25,7 +25,10 @@ class AuthController extends MainController
 
     public function registerMethod()
     {
-        return $this->twig->render("auth/register.twig");
+        
+        $alert = $this->getSession()["alert"] ?? "";
+
+        return $this->twig->render("auth/register.twig", ["alert" => $alert]);
     }
 
     public function resetPasswordMethod()
@@ -40,29 +43,35 @@ class AuthController extends MainController
     {
 
         $user = $this->checkUserByEmail();
-        var_dump($user);
-        die();
 
+        if(count($user) > 0) {
+            if (password_verify($this->getPost("password"), $user['password']) === TRUE) {
+                $user["lastConnexion"] = date("Y-m-d H:i:s");
+                ModelFactory::getModel("User")->updateData($user["id"], $user);
+                $this->setSession($user, true);
+                $this->setSession(["alert" => "success", "message" => "Connexion réussie."]);
+                $this->redirect("home");
+            }
+
+            $this->setSession(["alert" => "danger", "message" => "Mot de passe incorrect."]);
+            $this->redirect("auth_register");
+        }
+
+        $this->redirect("auth_createAccount");
 
     }
 
     protected function checkUserByEmail()
     {
-        
-        $email = $this->getPost("email");
-        $user = ModelFactory::getModel("User")->listData($email, "email")[0];
 
-        if ($user) {
+        if($this->checkInputs()) {
+            $email = $this->getPost("email");
+            $user = ModelFactory::getModel("User")->listData($email, "email")[0] ?? [];
+
             return $user;
         }
 
-        $this->setSession("alert", [
-            "type" => "danger",
-            "message" => "Cet email est inconnu de nos services."
-        ]);
-
-        return false;
     }
 
-  
+
 }

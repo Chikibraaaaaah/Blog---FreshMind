@@ -1,0 +1,42 @@
+{% extends "layout/layout.twig" %}
+
+
+{% block content %}
+
+    {% block title %}
+        <h2 class="text-center">Créer un article</h2>
+    {% endblock %}
+
+    {% block createArticle %}
+
+    <form action="index.php?access=article_createArticle"enctype="multipart/form-data"method="POST">
+
+        <div class="mb-3">
+            <label for="title"class="form-label">Titre de l'article</label>
+            <input type="text"name="title"class="form-control form-control-lg"id="title"required>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="content"class="form-label">Contenu de votre article</label>
+            <textarea class="form-control"name="content"id="content"rows="10"required placeholder="Il était une fois"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="img"class="form-label">Photo</label>
+            <input type="file"name="img"class="form-control"id="img"required>
+        </div>
+
+
+        <div class="mb-3">
+            <label for="alt"class="form-label">Texte alt photo</label>
+            <input type="text"name="alt"class="form-control form-control-lg"id="alt"required>
+        </div>
+
+        <button class="btn btn-primary">Créer</button>
+    </form>
+
+    {% endblock %}
+
+{% endblock %}
+

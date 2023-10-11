@@ -8,4 +8,9 @@ class ArticleController extends MainController
     {
     }
 
+    public function articleCreateMethod()
+    {
+        return $this->twig->render("article/articleCreate.twig");
+    }
+
 }
