@@ -1,0 +1,16 @@
+ {% for article in articles %}
+
+    <div class="col-8 mx-auto">
+    
+        <h2>{{ article.title }}</h2>
+
+        <figure class="figure">
+        
+            <img src="{{ article.imgUrl }}" alt="{{ article.imgAlt }}" class="figure-img img-fluid rounded">
+            <figcaption>{{ article.content }}</figcaption>
+        
+        </figure>
+
+    </div>
+    
+{% endfor %}

@@ -1,0 +1,26 @@
+{% extends "layout/layout.twig" %}
+
+{% block main %}
+
+<h1 class="text-center">Bienvenue sur Touneti Blog</h1>
+<legend class="text-center">Le plus souriant des tocars</legend>
+
+    <div class="row">
+
+          {% block hero %}
+                
+            {% include "layout/hero.twig" %}
+
+        {% endblock %}
+
+    </div>
+
+    <div class="row d-flex justify-content-center">
+    
+    <h2 class="text-center">Retrouvez toutes mes dernières publications</h2>
+    
+       {% include "article/articleList.twig" %}
+
+    </div>
+
+{% endblock %}
