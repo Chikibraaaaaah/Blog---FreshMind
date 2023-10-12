@@ -1,0 +1,40 @@
+{% extends "layout/layout.twig" %}
+
+{% block article %}
+
+        <article>
+
+            <h2> {{ article.title }} - {{ article.createdAt }}</h2>
+
+            <figure>
+
+                <img src="{{ article.imgUrl }}"width="300"alt="{{ article.altImg }}">
+                <figcaption>{{ article.content }}</figcaption>
+
+                {% if user.role > 0 %}
+                    <button>
+                        <a href="index.php?access=article_deleteArticle&id={{article.id}}">Supprimer</a>
+                    </button>
+                {% endif %}
+                
+            </figure>
+
+        </article>
+
+        <aside>
+
+            {% block comments %}
+
+                {% include"comment/commentList.twig"%}
+
+                {% if user and method == "GET" %}
+
+                    {% include"comment/commentCreate.twig"%}
+                            
+                {% endif %}
+
+            {% endblock %}
+
+        </aside>
+
+{% endblock %}

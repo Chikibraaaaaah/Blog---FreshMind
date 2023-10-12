@@ -73,5 +73,12 @@ class AuthController extends MainController
 
     }
 
+    public function logoutMethod()
+    {
+        $this->destroyGlobal();
+        $this->setSession(["alert" => "success", "message" => "A bientôt !"]);
+        $this->redirect("home");
+    }
+
 
 }

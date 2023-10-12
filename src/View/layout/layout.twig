@@ -22,10 +22,11 @@
             {% block reset %}{% endblock %}
             {% block createAccount %}{% endblock %}
     
-            {% block content %}{% endblock %}
+            {% block content %}
+                {% block article %}{% endblock %}
+            
+            {% endblock %}
 
-                        
-    
         {% endblock %}
 
         {% block footer %}

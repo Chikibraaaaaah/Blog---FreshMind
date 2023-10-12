@@ -30,10 +30,12 @@ class HomeController extends MainController
     {
         $articles = ModelFactory::getModel("Article")->listData();
         $user = $this->getSession("user") ?? [];
+        $alert = $this->getSession()["alert"] ?? [];
 
         return $this->twig->render("home.twig", [
             "articles" => $articles,
-            "user" => $user
+            "user" => $user,
+            "alert" => $alert
         ]);
     }
 

@@ -6,6 +6,20 @@
 
     <div class="row">
 
+    {% block alert %}
+    
+        {% if alert %}
+        
+                <div class="alert alert-{{ alert.type }} alert-dismissible fade show text-center" role="alert">
+                    {{ alert.message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+        
+        {% endif %}
+        
+    
+    {% endblock %}
+
           {% block hero %}
                 
             {% include "layout/hero.twig" %}
