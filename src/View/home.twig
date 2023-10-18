@@ -2,38 +2,31 @@
 
 {% block main %}
 
-<h1 class="text-center">Bienvenue sur Touneti Blog</h1>
+    <div class="d-flex justify-content-center container container-fluid mt-5">
+        <div class="mt-5">
 
-    <div class="row">
+            <h1 class="text-center">Bienvenue sur Touneti Blog</h1>
 
-    {% block alert %}
-    
-        {% if alert %}
-        
-                <div class="alert alert-{{ alert.type }} alert-dismissible fade show text-center" role="alert">
-                    {{ alert.message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-        
-        {% endif %}
-        
-    
-    {% endblock %}
+            <div class="row">
+                {% block alert %}
+                    {% if alert %}
+                            <div class="alert alert-{{ alert.type }} alert-dismissible fade show text-center" role="alert">
+                                {{ alert.message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                    {% endif %}
+                {% endblock %}
 
-          {% block hero %}
-                
-            {% include "layout/hero.twig" %}
+                {% block hero %}
+                    {% include "layout/hero.twig" %}
+                {% endblock %}
+            </div>
 
-        {% endblock %}
+            <div class="row d-flex justify-content-center">
+                <h2 class="text-center">Retrouvez toutes mes dernières publications</h2>
+                {% include "article/articleList.twig" %}
+            </div>
 
+        </div>
     </div>
-
-    <div class="row d-flex justify-content-center">
-    
-    <h2 class="text-center">Retrouvez toutes mes dernières publications</h2>
-    
-       {% include "article/articleList.twig" %}
-
-    </div>
-
 {% endblock %}

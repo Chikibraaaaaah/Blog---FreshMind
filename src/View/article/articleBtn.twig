@@ -1,14 +1,14 @@
 {% block button %}
 
-    <div class="row d-flex justify-content-space-around">
+    <div class="row d-flex ">
 
-        <div class="col-3">
+        <div class="col ">
 
         <button>
             <a href="index.php?access=article_getArticle&id={{article.id}}">Voir les commentaires</a>
         </button>
 
-            {% if user.role > 0 %}
+            {% if loggedUser.role > 0 %}
             
                 <button><a href="index.php?access=article_getArticle&id={{article.id}}">Modifier</a></button>
                 <button>Supprimer</button>
@@ -18,7 +18,7 @@
         
         </div>
 
-        {% if not user %}
+        {% if not loggedUser %}
         
             <div class="col-3">
                 <p>Pour consulter les commentaires, il faut être authentifié.</p>

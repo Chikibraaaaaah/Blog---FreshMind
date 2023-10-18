@@ -16,16 +16,19 @@
 
         {% block main %}
 
-            {% block about %}{% endblock %}
-            {% block form %}{% endblock %}
-            {% block register %}{% endblock %}
-            {% block reset %}{% endblock %}
-            {% block createAccount %}{% endblock %}
-    
-            {% block content %}
-                {% block article %}{% endblock %}
+            <div class="container mt-5">
+
+                {% block about %}{% endblock %}
+                {% block form %}{% endblock %}
+                {% block register %}{% endblock %}
+                {% block reset %}{% endblock %}
+                {% block createAccount %}{% endblock %}
+        
+                {% block content %}
+                    {% block article %}{% endblock %}
+                {% endblock %}
             
-            {% endblock %}
+            </div>
 
         {% endblock %}
 

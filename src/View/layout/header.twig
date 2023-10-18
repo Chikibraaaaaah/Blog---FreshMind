@@ -1,6 +1,8 @@
 <header>
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid position-relative">
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light  position-fixed top-0 start-0 w-100 mb-5" >
         <a class="navbar-brand" href="index.php">Blog Titoune</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
@@ -12,13 +14,13 @@
                 <a class="nav-link" href="index.php">Accueil <span class="sr-only">(current)</span></a>
             </li>
 
-            {% if user %}      
+            {% if loggedUser %}      
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php?access=user_getUser&id={{user.id}}"> {{user.userName}} </a>
+                    <a class="nav-link" href="index.php?access=user_getUser&id={{loggedUser.id}}"> {{loggedUser.userName}} </a>
                 </li>            
             {% endif %}
 
-            {% if user.role > 0 %}
+            {% if loggedUser.role > 0 %}
 
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?access=article_newArticle"> Nouvel article </a>
@@ -26,8 +28,6 @@
             
             {% endif %}
             
-   
-
             <li class="nav-item">
                 <a class="nav-link" href="index.php?access=home_about">Qui suis-je ?</a>
             </li>
@@ -36,13 +36,12 @@
                 <a class="nav-link" href="index.php?access=home_contact">Me contacter</a>
             </li>
 
-            {% if user %}      
+            {% if loggedUser %}      
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?access=auth_logout"> Se déconnecter </a>
                 </li>            
-            {% endif %}
-
-            {% if not user %}
+            
+            {% else %}
             
                 <li class="nav-item">
                     <a class="nav-link" href="index.php?access=auth_register">S'authentifier</a>
@@ -50,11 +49,11 @@
             
             {% endif %}
             
-
-      
-            
             </ul>
         </div>
     </nav>
+
+
+    </div>
 
 </header>
