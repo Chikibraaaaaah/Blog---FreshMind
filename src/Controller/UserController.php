@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Model\Factory\ModelFactory;
 
+
 class UserController extends MainController
 {
     public function defaultMethod()
@@ -17,18 +18,11 @@ class UserController extends MainController
         $alert = $this->getSession()["alert"];
         $loggedUser = $this->getSession("user");
 
-        // echo "<pre>"; 
-        // var_dump($loggedUser);
-        // echo "</pre>";
-        // die();
-
         return $this->twig->render("user/userProfile.twig", [
             "user" => $user,
             "alert" => $alert,
             "loggedUser" => $loggedUser
-            
         ]);
-
     }
 
     private function getUserById()
@@ -38,6 +32,27 @@ class UserController extends MainController
         $user["password"] = "";
 
         return $user;
+    }
+
+    public function updatePictureMethod()
+    {
+        
+        $fileInput = new ServiceController();
+        $destination = $fileInput->updatePicture();
+        $user = $this->getUserById();
+        $user["imgUrl"] = $destination;
+
+        ModelFactory::getModel("User")->updateData((int) $user["id"], $user);
+     
+        $this->setSession([
+            "alert" => "success",
+            "message" => "Votre photo de profil a bien été mise à jour."
+        ]);
+
+        return $this->getUserMethod();
+
+
+
     }
 
 }

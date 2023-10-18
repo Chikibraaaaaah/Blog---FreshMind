@@ -87,4 +87,16 @@ class ServiceController extends GlobalsController
         return $ext;
     }
 
+    public function updatePicture()
+    {
+        if ($this->getFiles()["img"]["size"] > 0 && $this->getFiles()["img"]["size"] < 1000000) {
+            $fileInput = new ServiceController();
+            $destination = $fileInput->uploadFile();
+           
+            return $destination;
+        }
+
+        return $this->setSession(["alert" => "danger", "message" => "Veuillez choisir un fichier."]);
+    }
+
 }

@@ -39,6 +39,8 @@ class AuthController extends MainController
 
     // Interactions functions
 
+    // Signup Function, mettre photo de profil par defaut  https://bootdey.com/img/Content/avatar/avatar7.png
+
     public function loginMethod()
     {
 

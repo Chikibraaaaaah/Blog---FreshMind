@@ -15,9 +15,9 @@ class ArticleController extends MainController
     public function newArticleMethod()
     {
 
-        $user = $this->checkUser();
+        $loggedUser = $this->getSession("user");
 
-        return $this->twig->render("article/articleCreate.twig");
+        return $this->twig->render("article/articleCreate.twig", ["loggedUser" => $loggedUser]);
 
     }
 
