@@ -1,61 +1,63 @@
 {% extends "layout/layout.twig" %}
 
-{% block register %}
+  {% block register %}
 
-  <div class="container">
+    <div class="container">
 
-    {% if alert %}
+    <div class="row mt-5">
     
-    <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert">
-      {{ alert.message }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      {% if alert %}
+        <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert">
+          {{ alert.message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endif %}
+    
     </div>
- 
-    
-    {% endif %}
+
+      <div class="row">
+
+      <h2 class="text-center mb-5">Connectez-vous</h2>
+      
+      <form action="index.php?access=auth_login" method="POST">
+        
+            <!-- Email input -->
+            <div class="form-outline mb-4 z-2">
+              <input type="email" id="email" class="form-control" name="email"/>
+              <label class="form-label" for="email">Adresse email</label>
+            </div>
+
+            <!-- Password input -->
+            <div class="form-outline mb-4">
+              <input type="password" id="password" class="form-control z-4" name="password"/>
+              <label class="form-label" for="password">Mot de passe</label>
+            </div>
+
+            <!-- 2 column grid layout -->
+            <div class="row mb-2">
+              <div class="col-md-6 d-flex justify-content-center">
+                <!-- Simple link -->
+                <a href="index.php?access=auth_resetPassword">Mot de passe oublié</a>
+              </div>
+            </div>
+
+              <!-- Submit button -->
+            <button type="submit" class="btn btn-primary btn-block mb-4">Se connecter</button>
+        
+        </form>
+      
+      </div>
+
+      <!-- Register buttons -->
+        <div class="text-center">
+          <p>Pas encore inscrit ? <a href="index.php?access=auth_createAccount">S'inscrire</a></p>
+        </div>
 
   
 
-    <form action="index.php?access=auth_login" method="POST">
-    
-        <!-- Email input -->
-        <div class="form-outline mb-4 z-2">
-          <input type="email" id="email" class="form-control" name="email"/>
-          <label class="form-label" for="email">Adresse email</label>
-        </div>
-
-        <!-- Password input -->
-        <div class="form-outline mb-4">
-          <input type="password" id="password" class="form-control z-4" name="password"/>
-          <label class="form-label" for="password">Mot de passe</label>
-        </div>
-
-        <!-- 2 column grid layout -->
-        <div class="row mb-2">
-
-        <div class="col-md-6 d-flex justify-content-center">
-          <!-- Simple link -->
-          <a href="index.php?access=auth_resetPassword">Mot de passe oublié</a>
-        </div>
-      </div>
-
-          <!-- Submit button -->
-        <button type="submit" class="btn btn-primary btn-block mb-4">Se connecter</button>
-    
-    </form>
-
-    <!-- Register buttons -->
-    <div class="text-center">
-      <p>Pas encore inscrit ? <a href="index.php?access=auth_createAccount">S'inscrire</a></p>
     </div>
 
-    </div>
- 
 
-
-  </div>
-
-
-    
-{% endblock %}
+      
+  {% endblock %}
 

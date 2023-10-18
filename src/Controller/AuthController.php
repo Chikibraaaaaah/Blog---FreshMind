@@ -82,5 +82,104 @@ class AuthController extends MainController
         $this->redirect("home");
     }
 
+    public function preventDeleteMethod()
+    {
+        $loggedUser = $this->getSession("user");
+
+        return $this->twig->render("alert/alertDeleteAccount.twig", ["loggedUser" => $loggedUser]);
+    }
+
+    public function deleteAccountMethod()
+    {
+        $id = $this->getSession("user")["id"];
+        ModelFactory::getModel("User")->deleteData($id);
+
+        $this->destroyGlobal();
+        $this->setSession(["alert" => "success", "message" => "A bientôt !"]);
+        $this->redirect("home");
+    }
+
+
+    private function checkPasswordsCorrespond()
+    {
+        $password = $this->getPost("password");
+        $secondPassword = $this->getPost("passwordMatch");
+
+        if ($password !== $secondPassword) {
+            return false;
+        }
+
+        return true;
+    }
+
+
+    private function checkByUserName()
+    {
+        $userName = $this->getPost("userName");
+        $userFound = ModelFactory::getModel("User")->listData($userName,"userName");
+
+        if ($userFound === TRUE) {
+            return $userFound[0];
+        }
+    }
+
+    private function checkByEmail()
+    {
+
+        $email = $this->getPost("email");
+        $userFound = ModelFactory::getModel("User")->listData($email,"email");
+
+        return $userFound;
+
+    }
+
+    public function signupMethod()
+{
+
+    if ($this->checkInputs() === FALSE) {
+        $alert = $this->getSession()["alert"];
+        $this->redirect("auth_createAccount");
+    }
+
+    $userFound = $this->checkByEmail();
+    
+    if (count($userFound) > 0) {
+        $this->setSession(["alert" => "danger", "message" => "Cet email est déjà utilisé."]);
+        return $this->registerMethod();
+    }
+
+    $mpChek = $this->checkPasswordsCorrespond();
+
+    if ($mpChek === FALSE) {
+        $this->setSession([
+            "alert" => "danger",
+            "message" => "Les mots de passe ne correspondent pas."
+        ]);
+        return $this->createAccountMethod();
+    }
+
+    $user = $this->createUser();
+
+    $this->setSession($user, true);
+    $this->setSession(["alert" => "success", "message" => "Votre compte a bien été créé."]);
+    $this->redirect("home");
+}
+
+
+    private function createUser()
+    {
+        $hashedPassword = password_hash($this->getPost("password"), PASSWORD_DEFAULT);
+        $newUser = [
+            "userName"  => $this->getPost("userName"),
+            "email"     => $this->getPost("email"),
+            "imgUrl"    => "https://bootdey.com/img/Content/avatar/avatar7.png",
+            "password"  => $hashedPassword,
+            "createdAt" => date("Y-m-d H:i:s")
+        ];
+        ModelFactory::getModel("User")->createData($newUser);
+        $userCreated = ModelFactory::getModel("User")->readData($newUser["email"], "email");
+
+        return $userCreated;
+    }
 
 }

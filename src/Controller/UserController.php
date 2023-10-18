@@ -21,15 +21,15 @@ class UserController extends MainController
         return $this->twig->render("user/userProfile.twig", [
             "user" => $user,
             "alert" => $alert,
-            "loggedUser" => $loggedUser
+            "loggedUser" => $loggedUser,
+            "method" => "GET"
         ]);
     }
 
     private function getUserById()
     {
         $id = $this->getGet("id");
-        $user = ModelFactory::getModel("User")->listData($id, "id")[0];
-        $user["password"] = "";
+        $user = ModelFactory::getModel("User")->listData($id, "id",["password"])[0];
 
         return $user;
     }
@@ -51,8 +51,30 @@ class UserController extends MainController
 
         return $this->getUserMethod();
 
-
-
     }
+
+    public function editUserProfileMethod()
+    {
+        return $this->twig->render("user/userProfile.twig", [
+            "user" => $this->getUserById(),
+            "alert" => $this->getSession()["alert"],
+            "loggedUser" => $this->getSession("user"),
+            "method" => "PUT"
+        ]);
+    }
+
+    public function updateUserMethod()
+    {
+        $user = $this->getUserById();
+
+        if ($this->checkInputs() === TRUE) {
+            $updatedUser = array_merge($user, $this->getPost());
+            ModelFactory::getModel("User")->updateData((int) $updatedUser["id"], $updatedUser);
+
+            return $this->getUserMethod();
+        }
+    }
+
+
 
 }

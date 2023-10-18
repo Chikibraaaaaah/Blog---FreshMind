@@ -1,0 +1,21 @@
+{% extends "user/userProfile.twig" %}
+
+{% block content %}
+
+    <div class="row d-flex justify-content-center align-items-center " style="height: 50vh;">
+        <div class="col-6 mx-auto">
+            <form action="index.php?access=auth_deleteAccount&id={{ user.id }}" method="post">
+                <p class="text-center">Êtes-vous sûr de vouloir supprimer votre compte ?<br>
+                Toutes vos informations seront perdues.</p>
+
+                <div class="col text-center">
+                    <button class="btn btn-danger">Supprimer</button>
+                    <button class="btn btn-secondary"><a href="index.php?access=user_getUser&id={{ loggedUser.id }}">Annuler</a></button>
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

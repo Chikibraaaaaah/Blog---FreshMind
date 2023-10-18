@@ -2,11 +2,15 @@
 
 {% block createAccount %}
 
-<div class="container container-fluid">
+  <div class="container container-fluid">
 
-    <form action="index.php?access=auth_login" method = "POST">
+    <div class="row mt-5">
 
-    <!-- UserName input -->
+      <h2 class="text-center">Inscrivez-vous</h2>
+
+      <form action="index.php?access=auth_signup" method = "POST">
+
+      <!-- UserName input -->
         <div class="form-outline mb-4 z-2">
           <input type="text" id="userName" class="form-control" name="userName"/>
           <label class="form-label" for="userName">Nom d'utilisateur</label>
@@ -32,24 +36,27 @@
 
         <!-- 2 column grid layout -->
         <div class="row mb-2">
-
-        <div class="col-md-6 d-flex justify-content-center">
-          <!-- Simple link -->
-          <a href="index.php?access=auth_resetPassword">Mot de passe oublié</a>
+          <div class="col-md-6 d-flex justify-content-center">
+            <!-- Simple link -->
+            <a href="index.php?access=auth_resetPassword">Mot de passe oublié</a>
+          </div>
         </div>
-      </div>
 
           <!-- Submit button -->
         <button type="submit" class="btn btn-primary btn-block mb-4">S'inscrire</button>
     
-    </form>
+      </form>
+
+    </div>
+
+    
 
     <!-- Register buttons -->
     <div class="text-center">
       <p>Déjà membre ? <a href="index.php?access=auth_register">Se connecter</a></p>
     </div>
 
-    </div>
+   
  
 
 
