@@ -15,7 +15,7 @@ class UserController extends MainController
     public function getUserMethod()
     {
         $user = $this->getUserById();
-        $alert = $this->getSession()["alert"];
+        $alert =  $this->getSession("alert") ?? [];
         $loggedUser = $this->getSession("user");
 
         return $this->twig->render("user/userProfile.twig", [
@@ -57,7 +57,7 @@ class UserController extends MainController
     {
         return $this->twig->render("user/userProfile.twig", [
             "user" => $this->getUserById(),
-            "alert" => $this->getSession()["alert"],
+            "alert" =>  $this->getSession("alert") ?? [],
             "loggedUser" => $this->getSession("user"),
             "method" => "PUT"
         ]);

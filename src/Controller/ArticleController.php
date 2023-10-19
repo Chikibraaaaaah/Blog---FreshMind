@@ -40,16 +40,19 @@ class ArticleController extends MainController
         ]);
         $this->redirect("home");
 
-
     }
 
     public function getArticleMethod()
     {
 
+        $loggedUser = $this->getSession("user");
         $article = $this->getArticleById();
+        $relatedComments = ModelFactory::getModel("Comment")->listData($article["id"], "articleId");
 
         return $this->twig->render("article/articleDetail.twig", [
-            "article" => $article
+            "article" => $article,
+            "loggedUser" => $loggedUser,    
+            "relatedComments" => $relatedComments
         ]);
 
     }
@@ -87,6 +90,29 @@ class ArticleController extends MainController
                 "id" => (int) $updatedArticle["id"]
             ]);
         }
+    }
+
+
+    public function confirmDeleteArticleMethod()
+    {
+        $articleId = $this->getGet("id");
+        $article = $this->getArticleById();
+        $loggedUser = $this->getSession("user");
+
+        return $this->twig->render("alert/alertDeleteArticle.twig", [
+            "article" => $article,
+            "loggedUser" => $loggedUser
+        ]);
+    }
+
+
+    public function deleteArticleMethod()
+    {
+        $id = $this->getGet("id");
+        ModelFactory::getModel("Article")->deleteData($id);
+        
+        $this->setSession(["alert" => "success", "message" => "L'article a bien été supprimé."]);
+        $this->redirect("home");
     }
 
 }

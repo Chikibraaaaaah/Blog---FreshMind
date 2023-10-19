@@ -20,20 +20,30 @@ class AuthController extends MainController
 
     public function createAccountMethod()
     {
-        return $this->twig->render("auth/createAccount.twig");
+
+        $alert = $this->getSession("alert") ?? [];
+
+        return $this->twig->render("auth/createAccount.twig", ["alert" => $alert]);
+
     }
+
 
     public function registerMethod()
     {
-        
-        $alert = $this->getSession()["alert"] ?? "";
+
+        $alert =  $this->getSession("alert") ?? [];
 
         return $this->twig->render("auth/register.twig", ["alert" => $alert]);
+
     }
 
     public function resetPasswordMethod()
     {
-        return $this->twig->render("auth/resetPassword.twig");
+
+        $alert =  $this->getSession("alert") ?? [];
+
+        return $this->twig->render("auth/resetPassword.twig", ["alert" => $alert]);
+
     }
 
 
@@ -47,6 +57,7 @@ class AuthController extends MainController
         $user = $this->checkUserByEmail();
 
         if(count($user) > 0) {
+
             if (password_verify($this->getPost("password"), $user['password']) === TRUE) {
                 $user["lastConnexion"] = date("Y-m-d H:i:s");
                 ModelFactory::getModel("User")->updateData($user["id"], $user);
@@ -55,11 +66,12 @@ class AuthController extends MainController
                 $this->redirect("home");
             }
 
-            $this->setSession(["alert" => "danger", "message" => "Mot de passe incorrect."]);
-            $this->redirect("auth_register");
+           
         }
 
-        $this->redirect("auth_createAccount");
+        $this->setSession(["alert" => "danger", "message" => "Mot de passe incorrect."]);
+
+        return $this->createAccountMethod();
 
     }
 
@@ -106,6 +118,7 @@ class AuthController extends MainController
         $secondPassword = $this->getPost("passwordMatch");
 
         if ($password !== $secondPassword) {
+            $this->setSession(["alert" => "danger", "message" => "Les mots de passe ne correspondent pas."]);
             return false;
         }
 
@@ -137,7 +150,7 @@ class AuthController extends MainController
 {
 
     if ($this->checkInputs() === FALSE) {
-        $alert = $this->getSession()["alert"];
+        $alert =  $this->getSession("alert") ?? [];
         $this->redirect("auth_createAccount");
     }
 

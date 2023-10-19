@@ -2,6 +2,10 @@
 
 {% block article %}
 
+<div class="row mt-3">
+
+    <div class="col mt-5">
+    
         <article>
 
             <h2> {{ article.title }} - {{ article.createdAt }}</h2>
@@ -11,9 +15,9 @@
                 <img src="{{ article.imgUrl }}"width="300"alt="{{ article.altImg }}">
                 <figcaption>{{ article.content }}</figcaption>
 
-                {% if user.role > 0 %}
+                {% if loggedUser.role == 1  %}
                     <button>
-                        <a href="index.php?access=article_deleteArticle&id={{article.id}}">Supprimer</a>
+                        <a href="index.php?access=article_confirmDeleteArticle&id={{article.id}}">Supprimer</a>
                     </button>
                 {% endif %}
                 
@@ -21,20 +25,62 @@
 
         </article>
 
-        <aside>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <div class="col">
+
+         <aside>
 
             {% block comments %}
 
-                {% include"comment/commentList.twig"%}
+            {% if relatedComments %}
+            
+                {% for comment in relatedComments %}
 
-                {% if user and method == "GET" %}
+                <ul>
 
-                    {% include"comment/commentCreate.twig"%}
+                    <li class="d-flex justify-content-around">
+                        <p>{{ comment.content }}</p>
+                        <p>{{ comment.authorId }}</p>
+                        <p>{{ comment.createdAt }}</p>
+                        <div>
+                            {% if comment.authorId == loggedUser.id or loggedUser.role == 1 %}
+                                <button>Modifier</button>
+                                <button>Supprimer</button>
+                            {% endif %}
+                        </div>
+                    </li>
+                
+                </ul>
+                    
+                {% endfor %}
+
+                {% else %}
+                    
+                    <p>Soyez-le premier à commenter.</p>
+            
+            {% endif %}
+            
+
+                {% if loggedUser %}
+
+                    {% include"comment/createComment.twig"%}
                             
                 {% endif %}
 
             {% endblock %}
 
         </aside>
+    
+    </div>
+
+</div>
+
+        
+       
 
 {% endblock %}

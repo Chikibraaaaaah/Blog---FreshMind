@@ -30,7 +30,7 @@ class HomeController extends MainController
     {
         $articles = ModelFactory::getModel("Article")->listData();
         $loggedUser = $this->getSession("user") ?? [];
-        $alert = $this->getSession()["alert"] ?? [];
+        $alert = $this->getSession("alert") ?? [];
 
         return $this->twig->render("home.twig", [
             "articles" => $articles,
@@ -41,12 +41,18 @@ class HomeController extends MainController
 
     public function aboutMethod()
     {
-        return $this->twig->render('about.twig');
+
+        $loggedUser = $this->getSession("user");
+
+        return $this->twig->render('about.twig', ["loggedUser" => $loggedUser]);
     }
 
     public function contactMethod()
     {
-        return $this->twig->render('form.twig');
+
+        $loggedUser = $this->getSession("user");
+
+        return $this->twig->render('form.twig', ["loggedUser" => $loggedUser]);
     }
 
 
