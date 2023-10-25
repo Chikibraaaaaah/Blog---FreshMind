@@ -29,7 +29,7 @@ class UserController extends MainController
     private function getUserById()
     {
         $id = $this->getGet("id");
-        $user = ModelFactory::getModel("User")->listData($id, "id",["password"])[0];
+        $user = ModelFactory::getModel("User")->readData($id, "id",["password"]);
 
         return $user;
     }

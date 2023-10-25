@@ -35,7 +35,20 @@
             <div class="row mb-5">
             
                 {% block content %}
-                    {% block article %}{% endblock %}
+
+
+                    {% block article %}
+
+                    {% block update %}
+                    
+                    {% endblock %}
+
+                    {% block comments %}{% endblock %}
+
+                    {% block updateComment %}{% endblock %}
+
+                    {% endblock %}
+                    
                 {% endblock %}
             
             </div>

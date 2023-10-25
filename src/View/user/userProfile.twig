@@ -93,10 +93,10 @@
           {% if loggedUser.id == user.id %}
             <div class="row">
               <div class="col text-center">
-                <button> <a href="index.php?access=user_editUserProfile&id={{ loggedUser.id }}"> Modifier mes informations</a></button>
+                <button> <a href="index.php?access=user_edit&id={{ loggedUser.id }}"> Modifier mes informations</a></button>
               </div>
               <div class="col text-center">
-                <button><a href="index.php?access=auth_preventDelete&id={{ loggedUser.id}}">Supprimer mon compte</a></button>
+                <button><a href="index.php?access=auth_prevent&id={{ loggedUser.id}}">Supprimer mon compte</a></button>
               </div>
             </div>
           {% endif %}
@@ -154,7 +154,7 @@
                 <div class="card-body">
                   <div class="row">
 
-                    <form action="index.php?access=user_updateUser&id={{ loggedUser.id }}" method="post">
+                    <form action="index.php?access=user_update&id={{ loggedUser.id }}" method="post">
 
                       <div class="col-sm-9 text-secondary">
                           <div class="form-group mb-3 ">
@@ -163,7 +163,7 @@
                           </div>
                       </div>
 
-                      <button><a href="index.php?access=user_updateUser&id={{ loggedUser.id }}">Valider</a></button>
+                      <button><a href="index.php?access=user_update&id={{ loggedUser.id }}">Valider</a></button>
                     </form>
                   </div>
                   <hr>
@@ -172,7 +172,7 @@
                     <div class="col--3">
                       <h6 class="mb-0">Modifier mon mot de passe</h6>
 
-                      <form action="index.php?access=user_updateUser&id={{ loggedUser.id }}" method="post">
+                      <form action="index.php?access=user_update&id={{ loggedUser.id }}" method="post">
 
                         <div class="col-sm-9 text-secondary">
                             <div class="form-group mb-3 ">
@@ -188,7 +188,7 @@
                           </div>
                         </div>
 
-                        <button><a href="index.php?access=user_updateUser&id={{ loggedUser.id }}">Valider</a></button>
+                        <button><a href="index.php?access=user_update&id={{ loggedUser.id }}">Valider</a></button>
 
                       </form>
 

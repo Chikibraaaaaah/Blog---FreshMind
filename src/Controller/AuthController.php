@@ -181,6 +181,7 @@ class AuthController extends MainController
 
     private function createUser()
     {
+
         $hashedPassword = password_hash($this->getPost("password"), PASSWORD_DEFAULT);
         $newUser = [
             "userName"  => $this->getPost("userName"),
@@ -193,6 +194,7 @@ class AuthController extends MainController
         $userCreated = ModelFactory::getModel("User")->readData($newUser["email"], "email");
 
         return $userCreated;
+
     }
 
 }

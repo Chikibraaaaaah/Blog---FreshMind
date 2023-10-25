@@ -2,85 +2,94 @@
 
 {% block article %}
 
-<div class="row mt-3">
+    {% if method != "PUT" %}
+        <div class="row mt-3">
+            <div class="col mt-5">
+                <article class="article d-flex flex-column mx-auto">
+                    <h2 class="title"> {{ article.title }} - {{ article.createdAt }}</h2>
+                    <figure>
+                        <img src="{{ article.imgUrl }}"width="300"alt="{{ article.altImg }}">
+                        <figcaption>{{ article.content }}</figcaption>
+                        {% if loggedUser.role == 1 or loggedUser.id == article.authorId %}
+                            <button>
+                                <a href="index.php?access=article_get&id={{article.id}}">Modifier</a>
+                            </button>
+                            <button>
+                                <a href="index.php?access=article_confirmDelete&id={{article.id}}">Supprimer</a>
+                            </button>
+                        {% endif %}
+                    </figure>
+                </article>
+            </div>
+        </div>
 
-    <div class="col mt-5">
-    
-        <article>
-
-            <h2> {{ article.title }} - {{ article.createdAt }}</h2>
-
-            <figure>
-
-                <img src="{{ article.imgUrl }}"width="300"alt="{{ article.altImg }}">
-                <figcaption>{{ article.content }}</figcaption>
-
-                {% if loggedUser.role == 1  %}
-                    <button>
-                        <a href="index.php?access=article_confirmDeleteArticle&id={{article.id}}">Supprimer</a>
-                    </button>
-                {% endif %}
-                
-            </figure>
-
-        </article>
-
+        <div class="row">
+        <div class="col">
+            <aside>
+                {% block comments %}
+                    {% if relatedComments %}
+                        {% include "comment/commentList.twig" %}
+                    {% else %}
+                        <p>Soyez-le premier à commenter.</p>
+                    {% endif %}
+                    {% if loggedUser %}
+                        {% include"comment/createComment.twig"%}
+                    {% endif %}
+                {% endblock %}
+            </aside>
+        </div>
     </div>
 
-</div>
+    {% else %}
 
-<div class="row">
-
-    <div class="col">
-
-         <aside>
-
-            {% block comments %}
-
-            {% if relatedComments %}
-            
-                {% for comment in relatedComments %}
-
-                <ul>
-
-                    <li class="d-flex justify-content-around">
-                        <p>{{ comment.content }}</p>
-                        <p>{{ comment.authorId }}</p>
-                        <p>{{ comment.createdAt }}</p>
-                        <div>
-                            {% if comment.authorId == loggedUser.id or loggedUser.role == 1 %}
-                                <button>Modifier</button>
-                                <button>Supprimer</button>
-                            {% endif %}
-                        </div>
-                    </li>
+        <div class="row mt-3">
+            <div class="col mt-5">
+                <article class="article d-flex flex-column mx-auto col-8 mx-auto">
                 
-                </ul>
-                    
-                {% endfor %}
 
-                {% else %}
-                    
-                    <p>Soyez-le premier à commenter.</p>
-            
-            {% endif %}
-            
-
-                {% if loggedUser %}
-
-                    {% include"comment/createComment.twig"%}
+                    <form action="index.php?access=article_update&id={{article.id}}" name="article" enctype="multipart/form-data" method="POST" class="row d-flex justify-content-center m-2">
                             
-                {% endif %}
+                            <div class="form-container row d-flex flex-row justify-content-around">
+                                <label for="title">Nouveau titre</label>
+                                <input type="text" name="title" value="{{article.title}}" class="d-block mb">
+                            </div>
+                            
+                            <div class="form-container row d-flex flex-row justify-content-around">
+                                <label for="title" class="form-label d-block">Nouveau contenu</label>
+                                <textarea type="text" name="content">{{article.content}}</textarea>
+                            </div>
 
-            {% endblock %}
+                            <figure class="figure d-flex row m-3">
+                            
+                                <img src="{{ article.imgUrl }}" alt="{{ article.altImg }}">
+                            
+                            </figure>
 
-        </aside>
+                            <div class="form-container row d-flex flex-row justify-content-around">
+                                <input type="file" name="img" class="d-block"> 
+                            </div>
+                            
+                            
+                            {% if loggedUser.role == 1 or loggedUser.id == article.authorId %}
+                                <div class="row d-flex flex-row justify-content-around m-3">
+                    
+                                    <button class="btn  col-3">
+                                        Modifier
+                                    </button>
+
+                                    <button class="btn  col-3 ">
+                                        <a href="index.php?access=article_get&id={{article.id}}">Annuler</a>
+                                    </button>
+                                </div>
+                                
+                            {% endif %} 
+                    
+                    </form>
+                    
+                </article>
+            </div>
+        </div>
+    {% endif %}
+
     
-    </div>
-
-</div>
-
-        
-       
-
 {% endblock %}

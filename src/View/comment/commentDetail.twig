@@ -1,0 +1,24 @@
+{% extends "layout/layout.twig" %}
+
+{% block updateComment %}
+
+    <div class="container mt-3">
+
+    <h2 class="text-center mt-3">Modifier un commentaire</h2>
+    
+        <form action="index.php?access=comment_update&id={{ comment.id }}" method="post" class="d-flex flex-column">
+        
+            <div class="form-container d-flex flex-column col-4 mx-auto m-2">
+                <label for="comment">Modifiez votre commentaire</label>
+                <textarea name="content" id="content">{{ comment.content }}</textarea>
+            </div>
+
+            <div class="col-3 mx-auto">
+                <button class="btn btn-primary mx-auto mt-3">Modifier</button>
+                <button class="btn btn-danger mx-auto mt-3">Annuler</button>
+            </div>
+
+        </form>
+    </div>
+
+{% endblock %}

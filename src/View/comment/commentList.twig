@@ -1,0 +1,25 @@
+{% block comments %}
+
+    {% for comment in relatedComments | sort((a, b) => a.createdAt <=> b.createdAt) | reverse %}
+        <ul>
+            <li class="d-flex justify-content-around">
+                <p>{{ comment.content }}</p>
+                <p>{{ comment.authorId }}</p>
+                <p>{{ comment.createdAt }}</p>
+                <div>
+                    {% if comment.authorId == loggedUser.id or loggedUser.role == 1 %}
+                        <button><a href="index.php?access=comment_modify&id={{ comment.id }}">Modifier</a></button>
+                        <button>Supprimer</button>
+                    {% endif %}
+                </div>
+            </li>
+        </ul>
+
+        {% if method != "PUT" %}
+            
+        {% endif %}
+        
+    {% endfor %}
+
+{% endblock %}
+

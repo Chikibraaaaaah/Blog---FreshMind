@@ -21,7 +21,7 @@ class ArticleController extends MainController
 
     }
 
-    public function createArticleMethod()
+    public function createMethod()
     {
 
         $destination = new ServiceController();
@@ -42,11 +42,11 @@ class ArticleController extends MainController
 
     }
 
-    public function getArticleMethod()
+    public function getMethod()
     {
 
         $loggedUser = $this->getSession("user");
-        $article = $this->getArticleById();
+        $article = $this->getById();
         $relatedComments = ModelFactory::getModel("Comment")->listData($article["id"], "articleId");
 
         return $this->twig->render("article/articleDetail.twig", [
@@ -58,7 +58,7 @@ class ArticleController extends MainController
     }
 
 
-    protected function getArticleById()
+    protected function getById()
     {
         $articleId = $this->getGet("id");
         $article = ModelFactory::getModel("Article")->readData($articleId,"id");
@@ -66,9 +66,9 @@ class ArticleController extends MainController
         return $article;
     }
 
-    public function updateArticleMethod()
+    public function updateMethod()
     {
-        $existingArticle = $this->getArticleById();
+        $existingArticle = $this->getById();
         $destination = $existingArticle["imgUrl"];
 
         if ($this->getFiles()["img"]["size"] > 0 && $this->getFiles()["img"]["size"] < 1000000) {
@@ -78,7 +78,8 @@ class ArticleController extends MainController
 
         if ($this->checkInputs() === TRUE) {
             $updatedArticle = array_merge($existingArticle, $this->getPost());
-            $updatedArticle["imgUrl"] = $newFile;
+      
+            $updatedArticle["imgUrl"]       = $newFile ?? $existingArticle["imgUrl"];
             $updatedArticle["imgAlt"]       = $this->encodeString($this->getPost("content"));
             $updatedArticle["title"]        = $this->encodeString($updatedArticle["title"]);
             $updatedArticle["content"]      = $this->encodeString($updatedArticle["content"]);
@@ -86,17 +87,20 @@ class ArticleController extends MainController
 
             ModelFactory::getModel("Article")->updateData((int) $updatedArticle["id"], $updatedArticle);
 
-            $this->redirect("article_renderArticle", [
-                "id" => (int) $updatedArticle["id"]
+            $this->setSession([
+                "alert" => "success",
+                "message" => "L'article a bien été mis à jour."
             ]);
+
+            $this->redirect("home");
         }
     }
 
 
-    public function confirmDeleteArticleMethod()
+    public function confirmDeleteMethod()
     {
         $articleId = $this->getGet("id");
-        $article = $this->getArticleById();
+        $article = $this->getById();
         $loggedUser = $this->getSession("user");
 
         return $this->twig->render("alert/alertDeleteArticle.twig", [
@@ -106,13 +110,30 @@ class ArticleController extends MainController
     }
 
 
-    public function deleteArticleMethod()
+    public function deleteMethod()
     {
         $id = $this->getGet("id");
+
         ModelFactory::getModel("Article")->deleteData($id);
         
-        $this->setSession(["alert" => "success", "message" => "L'article a bien été supprimé."]);
+        $this->setSession([
+            "alert"     => "success",
+            "message"   => "L'article a bien été supprimé."
+        ]);
         $this->redirect("home");
+    }
+
+    public function modifyMethod()
+    {
+        $id = $this->getGet("id");
+        $article = $this->getById();
+        $loggedUser = $this->getSession("user");
+
+        return $this->twig->render("article/articleDetail.twig", [
+            "article" => $article,
+            "loggedUser" => $loggedUser,
+            "method" => "PUT"
+        ]);
     }
 
 }
