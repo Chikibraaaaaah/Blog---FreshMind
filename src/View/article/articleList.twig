@@ -1,15 +1,17 @@
- {% for article in articles %}
+ {% for article in articles | sort((a, b) => a.createdAt <=> b.createdAt) | reverse %}
 
     <div class="col-8 mx-auto">
     
-        <h2>{{ article.title }}</h2>
+        <h2>{{ article.title }} - {{ article.createdAt }}</h2>
 
-        <figure class="figure">
+        <figure class="figure mh-100">
         
             <img src="{{ article.imgUrl }}" alt="{{ article.imgAlt }}" class="figure-img img-fluid rounded">
             <figcaption>{{ article.content }}</figcaption>
         
         </figure>
+
+        {% include "article/articleBtn.twig" %}
 
     </div>
     

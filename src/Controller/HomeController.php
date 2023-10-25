@@ -29,22 +29,30 @@ class HomeController extends MainController
     public function defaultMethod()
     {
         $articles = ModelFactory::getModel("Article")->listData();
-        $user = $this->getSession("user") ?? [];
+        $loggedUser = $this->getSession("user") ?? [];
+        $alert = $this->getSession("alert") ?? [];
 
         return $this->twig->render("home.twig", [
             "articles" => $articles,
-            "user" => $user
+            "loggedUser" => $loggedUser,
+            "alert" => $alert
         ]);
     }
 
     public function aboutMethod()
     {
-        return $this->twig->render('about.twig');
+
+        $loggedUser = $this->getSession("user");
+
+        return $this->twig->render('about.twig', ["loggedUser" => $loggedUser]);
     }
 
     public function contactMethod()
     {
-        return $this->twig->render('form.twig');
+
+        $loggedUser = $this->getSession("user");
+
+        return $this->twig->render('form.twig', ["loggedUser" => $loggedUser]);
     }
 
 
