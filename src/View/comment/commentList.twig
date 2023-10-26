@@ -9,7 +9,7 @@
                 <div>
                     {% if comment.authorId == loggedUser.id or loggedUser.role == 1 %}
                         <button><a href="index.php?access=comment_modify&id={{ comment.id }}">Modifier</a></button>
-                        <button><a href="index.php?access=comment_delete&id={{ comment.id }}">Supprimer</a></button>
+                        <button><a href="index.php?access=comment_confirmDelete&id={{ comment.id }}">Supprimer</a></button>
                     {% endif %}
                 </div>
             </li>

@@ -38,8 +38,8 @@ class CommentController extends MainController
         $article = ModelFactory::getModel("Article")->readData($comment["articleId"], "id");
         $relatedComments = ModelFactory::getModel("Comment")->listData($article["id"], "articleId");
 
-        var_dump($article);
-        die();
+        // var_dump($article);
+        // die();
 
         return $this->twig->render("article/articleDetail.twig", [
             "article" => $article,
@@ -89,7 +89,19 @@ class CommentController extends MainController
         $this->redirect("home");
     }
 
+    public function confirmDeleteMethod()
+    {
+        $id = $this->getGet("id");
+        $comment = ModelFactory::getModel("Comment")->readData($id, "id");
+        $article = ModelFactory::getModel("Article")->readData($comment["articleId"], "id");
+        $user = $this->getSession()["user"];
 
+        return $this->twig->render("alert/alertDeleteComment.twig", [
+            "article" => $article,
+            "comment" => $comment,
+            "loggedUser" => $user
+        ]);
+    }
 
 
 }
