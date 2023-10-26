@@ -54,11 +54,13 @@ class AuthController extends MainController
     public function loginMethod()
     {
 
-        $user = $this->checkUserByEmail();
+        $user = $this->checkByEmail();
 
         if(count($user) > 0) {
 
-            if (password_verify($this->getPost("password"), $user['password']) === TRUE) {
+            // var_dump($this->getPost("password"));
+
+            if (password_verify($this->getPost("password"), $user["password"]) === TRUE) {
                 $user["lastConnexion"] = date("Y-m-d H:i:s");
                 ModelFactory::getModel("User")->updateData($user["id"], $user);
                 $this->setSession($user, true);
@@ -75,17 +77,6 @@ class AuthController extends MainController
 
     }
 
-    protected function checkUserByEmail()
-    {
-
-        if($this->checkInputs()) {
-            $email = $this->getPost("email");
-            $user = ModelFactory::getModel("User")->listData($email, "email")[0] ?? [];
-
-            return $user;
-        }
-
-    }
 
     public function logoutMethod()
     {
@@ -140,7 +131,7 @@ class AuthController extends MainController
     {
 
         $email = $this->getPost("email");
-        $userFound = ModelFactory::getModel("User")->listData($email,"email");
+        $userFound = ModelFactory::getModel("User")->readData($email,"email");
 
         return $userFound;
 

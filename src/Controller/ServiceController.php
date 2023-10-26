@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Model\Factory\ModelFactory;
 use Twig\Error\LoaderError;
 use RuntimeException;
-
+use Swift_Message;
+use Swift_Mailer;
+use Swift_SmtpTransport;
 
 class ServiceController extends GlobalsController
 {
@@ -98,5 +101,53 @@ class ServiceController extends GlobalsController
 
         return $this->setSession(["alert" => "danger", "message" => "Veuillez choisir un fichier."]);
     }
+
+    public function retrieveByEmail()
+    {
+
+       if ($this->checkInputs() === TRUE) {
+            $email = $this->getPost("email");
+            $user = ModelFactory::getModel("User")->readData($email,"email");
+
+            return $user;
+        }
+
+    }
+
+
+    public function sendMailMethod()
+    {
+        $user = $this->retrieveByEmail();
+        // var_dump($user);
+        // die();
+
+        $receiver = $this->getPost("email");
+        $subject = $this->getGet("subject");
+        $content = ($subject === "password") ? "Bonjour " . $user["userName"] . ",\n\nVous avez demandé de réinitialisez votre mot de passe.\nPour cela, veuillez cliquer sur le lien suivant : http://localhost:8888/Blog/BlogFinal/public/index.php?access=auth_resetPassword\nBisous carresse" : "Bonjour " . $user["userName"] . ",\n\n Votre dernier commentaire a été aprouvé par nos équipes.\n Bisous";        // Créer un objet de transport SMTP
+        $transport = new Swift_SmtpTransport("smtp.gmail.com", 587, "tls");
+        $transport->setUsername("tristanriedinger@gmail.com");
+        $transport->setPassword("xvajpmjxxczmfnxb");
+
+        // Créer un objet de messagerie
+        $mailer = new Swift_Mailer($transport);
+
+        // Créer un objet de message
+        $message = new Swift_Message("Sujet du message");
+        $message->setFrom("tristanriedinger@gmail.com", "Tristan Riedinger - Admin Blog");
+        $message->setTo($receiver);
+        $message->setBody($content);
+
+        // Envoyer le message
+        $result = $mailer->send($message);
+
+        // Vérifier le résultat de l"envoi
+        if ($result) {
+            echo "Message envoyé avec succès !";
+        } else {
+            echo "Le message n\'a pas pu être envoyé.";
+        }
+
+    }
+
 
 }
