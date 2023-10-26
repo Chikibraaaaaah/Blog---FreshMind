@@ -38,6 +38,9 @@ class CommentController extends MainController
         $article = ModelFactory::getModel("Article")->readData($comment["articleId"], "id");
         $relatedComments = ModelFactory::getModel("Comment")->listData($article["id"], "articleId");
 
+        var_dump($article);
+        die();
+
         return $this->twig->render("article/articleDetail.twig", [
             "article" => $article,
             "loggedUser" => $this->getSession()["user"],
@@ -60,6 +63,30 @@ class CommentController extends MainController
             "loggedUser"              => $this->getSession()["user"],
 
         ]);
+    }
+
+    public function updateMethod()
+    {
+        $existingComment = ModelFactory::getModel("Comment")->listData($this->getGet("id"),"id")[0];
+
+        if ($this->checkInputs() === TRUE) {
+            $updatedComment = array_merge($existingComment, $this->getPost());
+            $updatedComment["content"] = $this->encodeString($updatedComment["content"]);
+            $updatedComment["updatedAt"] = date("Y-m-d H:i:s");
+
+            ModelFactory::getModel("Comment")->updateData($existingComment["id"], $updatedComment);
+            $this->redirect("article_renderArticle", ["id" => $updatedComment["articleId"]]);
+
+        }
+    }
+
+    public function deleteMethod()
+    {
+        $id = $this->getGet("id");
+        $comment = ModelFactory::getModel("Comment")->deleteData($id);
+
+        $this->setSession(["alert" => "success", "message" => "Commentaire supprimé"]);
+        $this->redirect("home");
     }
 
 
