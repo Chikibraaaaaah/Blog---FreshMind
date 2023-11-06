@@ -83,8 +83,8 @@ class CommentController extends MainController
     public function deleteMethod()
     {
         $id = $this->getGet("id");
-        $comment = ModelFactory::getModel("Comment")->deleteData($id);
-
+        
+        ModelFactory::getModel("Comment")->deleteData($id);
         $this->setSession(["alert" => "success", "message" => "Commentaire supprimé"]);
         $this->redirect("home");
     }

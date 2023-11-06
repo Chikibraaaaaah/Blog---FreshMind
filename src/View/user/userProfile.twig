@@ -2,7 +2,14 @@
 
 {% block content %}
 
-{% block alert %}{% endblock %}
+{% block alert %}
+  {% if alert %}
+    <div class="alert alert-{{ alert.alert }} alert-dismissible fade show text-center" role="alert">
+      {{ alert.message }}
+    </div>
+  {% endif %}
+  
+{% endblock %}
 
   {% if method == "GET" %}
 
@@ -140,7 +147,7 @@
                     </div>
                     {% if loggedUser.id == user.id %}
                       <form action="index.php?access=user_updatePicture&id={{ loggedUser.id }}" method="post" enctype="multipart/form-data">
-                        <input type="file" name="img" id="img" accept="image/*" class="form-control mb-2 mt-2" />
+                        <input type="file" name="img" id="img" accept="image/*" class="form-control mb-2 mt-2" required/>
                         <button for="img" class="btn btn-outline-primary">Modifier ma photo</button>
                       </form>
                     {% endif %}

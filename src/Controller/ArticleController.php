@@ -125,7 +125,7 @@ class ArticleController extends MainController
 
     public function modifyMethod()
     {
-        $id = $this->getGet("id");
+
         $article = $this->getById();
         $loggedUser = $this->getSession("user");
 
@@ -134,6 +134,7 @@ class ArticleController extends MainController
             "loggedUser" => $loggedUser,
             "method" => "PUT"
         ]);
+
     }
 
 }

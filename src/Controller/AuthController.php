@@ -21,7 +21,8 @@ class AuthController extends MainController
     public function createAccountMethod()
     {
 
-        $alert = $this->getSession("alert") ?? [];
+        $alert = $this->getSession()["alert"] ?? [];
+
 
         return $this->twig->render("auth/createAccount.twig", ["alert" => $alert]);
 
@@ -141,13 +142,14 @@ class AuthController extends MainController
 {
 
     if ($this->checkInputs() === FALSE) {
-        $alert =  $this->getSession("alert") ?? [];
-        $this->redirect("auth_createAccount");
+        $alert =  $this->getSession()["alert"] ?? [];
+        return $this->createAccountMethod();
     }
 
     $userFound = $this->checkByEmail();
-    
-    if (count($userFound) > 0) {
+
+
+    if ($userFound === FALSE) {
         $this->setSession(["alert" => "danger", "message" => "Cet email est déjà utilisé."]);
         return $this->registerMethod();
     }
@@ -169,23 +171,24 @@ class AuthController extends MainController
     $this->redirect("home");
 }
 
+private function createUser()
+{
 
-    private function createUser()
-    {
+    $hashedPassword = password_hash($this->getPost("password"), PASSWORD_DEFAULT);
+    $newUser = [
+        "userName"  => $this->getPost("userName"),
+        "email"     => $this->getPost("email"),
+        "imgUrl"    => "https://bootdey.com/img/Content/avatar/avatar7.png",
+        "password"  => $hashedPassword,
+        "createdAt" => date("Y-m-d H:i:s")
+    ];
+    ModelFactory::getModel("User")->createData($newUser);
+    $userCreated = ModelFactory::getModel("User")->readData($newUser["email"], "email");
 
-        $hashedPassword = password_hash($this->getPost("password"), PASSWORD_DEFAULT);
-        $newUser = [
-            "userName"  => $this->getPost("userName"),
-            "email"     => $this->getPost("email"),
-            "imgUrl"    => "https://bootdey.com/img/Content/avatar/avatar7.png",
-            "password"  => $hashedPassword,
-            "createdAt" => date("Y-m-d H:i:s")
-        ];
-        ModelFactory::getModel("User")->createData($newUser);
-        $userCreated = ModelFactory::getModel("User")->readData($newUser["email"], "email");
+    return $userCreated;
 
-        return $userCreated;
+}
 
-    }
+
 
 }

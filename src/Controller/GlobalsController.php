@@ -158,7 +158,7 @@ abstract class GlobalsController
             if (empty($value) === TRUE) {
                 $this->setSession([
                     "alert" => "danger",
-                    "message" => "Veuillez remplir le champ" . $input
+                    "message" => "Veuillez remplir le champ " . $input
                 ]);
                 return false;
             }

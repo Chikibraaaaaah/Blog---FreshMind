@@ -36,7 +36,15 @@ class UserController extends MainController
 
     public function updatePictureMethod()
     {
-        
+
+        if ($this->getFIles()["img"]["size"] == 0){
+            $this->setSession([
+                "alert" => "error",
+                "message" => "Veuillez sélecitonner une image."
+            ]);
+            return $this->getUserMethod();
+        }
+
         $fileInput = new ServiceController();
         $destination = $fileInput->updatePicture();
         $user = $this->getUserById();

@@ -2,18 +2,15 @@
 
 {% block createAccount %}
 
-    <div class="row mt-5">
-    
-      {% if alert %}
-        {# <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert">
-          {{ alert.message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div> #}
-
-        <p>{{ alert }}</p>
-      {% endif %}
-    
+  {% if alert %}
+  
+    <div class="alert alert-{{ alert.alert }} alert-dismissible fade show" role="alert">
+      {{ alert.message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
+  
+  {% endif %}
+  
 
   <div class="container container-fluid">
 
@@ -57,6 +54,7 @@
 
           <!-- Submit button -->
         <button type="submit" class="btn btn-primary btn-block mb-4">S'inscrire</button>
+        
     
       </form>
 
