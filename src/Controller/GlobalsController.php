@@ -182,6 +182,7 @@ abstract class GlobalsController
             }
 
             echo filter_var($this->alert["message"]);
+
             unset($_SESSION["alert"]);
         }
     }

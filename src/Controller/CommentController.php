@@ -7,6 +7,18 @@ use App\Model\Factory\ModelFactory;
 class CommentController extends MainController
 {
 
+    private $alert;
+
+    private $id;
+
+    private $comment;
+
+    private $article;
+
+    private $loggedUser;
+
+    private $relatedComments;
+
     public function defaultMethod()
     {
 
@@ -14,31 +26,32 @@ class CommentController extends MainController
 
     public function createMethod()
     {
-
-        $newComment = [
+        $this->comment = [
             "authorId"  => (int) $this->getSession("user")["id"],
             "articleId" => (int) $this->getGet("id"),
             "content"   => $this->getPost("content"),
             "createdAt" => date("Y-m-d H:i:s")
         ];
 
-        ModelFactory::getModel("Comment")->createData($newComment);
+        ModelFactory::getModel("Comment")->createData($this->comment);
         $this->setSession([
             "alert"     => "success",
-            "message" => "Nous nous réservons le droit à une première lecture avant de publier votre commentaire. Merci pour votre compréhension"
+            "message"   => "Nous nous réservons le droit à une première lecture avant de publier votre commentaire. Merci pour votre compréhension"
         ]);
-        $this->redirect("article_get", ["id" => $newComment["articleId"]]);
+        $this->redirect("article_get", ["id" => $this->comment["articleId"]]);
     }
 
     public function getRelatedArticle($id)
     {
-        $article = ModelFactory::getModel("Article")->readData($id, "id");
-        $relatedComments = ModelFactory::getModel("Comment")->listData($article["id"], "articleId");
+        $this->article            = ModelFactory::getModel("Article")->readData($id, "id");
+        $this->relatedComments    = ModelFactory::getModel("Comment")->listData($this->article["id"], "articleId");
+        $this->alert              = $this->getAlert() ?? [];
 
         return $this->twig->render("article/getOneArticle.twig", [
-            "article" => $article,
-            "loggedUser" => $this->getSession()["user"],
-            "relatedComments" => $relatedComments
+            "article"           => $this->article,
+            "loggedUser"        => $this->getSession()["user"],
+            "relatedComments"   => $this->relatedComments,
+            "alert"             => $this->alert
         ]);
     }
 
@@ -46,56 +59,61 @@ class CommentController extends MainController
     public function modifyMethod()
     {
         // Récuperer comment dans les comments
-        // $comment            = ModelFactory::getModel("Comment")->readData($this->getGet("id"), "id");
-        $article            = ModelFactory::getModel("Article")->readData($comment["articleId"], "id");
-        $relatedComments    = ModelFactory::getModel("Comment")->listData($article["id"], "articleId");
+        $this->comment            = ModelFactory::getModel("Comment")->readData($this->getGet("id"), "id");
+        $this->article            = ModelFactory::getModel("Article")->readData($this->comment["articleId"], "id");
+        $this->relatedComments    = ModelFactory::getModel("Comment")->listData($this->article["id"], "articleId");
 
         return $this->twig->render("comment/getComment.twig", [
-            "article"           => $article,
-            "comment"           => $comment,
-            "relatedComments"   => $relatedComments,
+            "article"           => $this->article,
+            "comment"           => $this->comment,
+            "relatedComments"   => $this->relatedComments,
             "loggedUser"        => $this->getSession()["user"]
         ]);
     }
 
     public function updateMethod()
     {
-        $existingComment = ModelFactory::getModel("Comment")->listData($this->getGet("id"),"id")[0];
+        $this->comment = ModelFactory::getModel("Comment")->readData($this->getGet("id"),"id");
 
         if ($this->checkInputs() === TRUE) {
-            $updatedComment = array_merge($existingComment, $this->getPost());
+            $updatedComment = array_merge($this->comment, $this->getPost());
             $updatedComment["content"] = $this->encodeString($updatedComment["content"]);
             $updatedComment["updatedAt"] = date("Y-m-d H:i:s");
 
-            ModelFactory::getModel("Comment")->updateData($existingComment["id"], $updatedComment);
+            ModelFactory::getModel("Comment")->updateData($this->comment["id"], $updatedComment);
+            $this->setSession([
+                "alert"     => "success",
+                "message"   => "Votre commentaire a été mis à jour."
+            ]);
             $this->redirect("article_renderArticle", ["id" => $updatedComment["articleId"]]);
         }
     }
 
     public function deleteMethod()
     {
-        $id = $this->getGet("id");
-        $comment = ModelFactory::getModel("Comment")->readData($id, "id");
+        $this->id       = $this->getGet("id");
+        $this->comment  = ModelFactory::getModel("Comment")->readData($this->id, "id");
 
-        ModelFactory::getModel("Comment")->deleteData($id);
-        $this->setSession(["alert" => "success", "message" => "Commentaire supprimé"]);
-        
-        $this->redirect("article_get", ["id" => $comment["articleId"]]);
+        ModelFactory::getModel("Comment")->deleteData($this->id);
+        $this->setSession([
+            "alert"     => "success",
+            "message"   => "Commentaire supprimé"
+        ]);
+        $this->redirect("article_get", ["id" => $this->comment["articleId"]]);
     }
 
     public function confirmDeleteMethod()
     {
-        $id = $this->getGet("id");
-        $comment = ModelFactory::getModel("Comment")->readData($id, "id");
-        $article = ModelFactory::getModel("Article")->readData($comment["articleId"], "id");
-        $user = $this->getSession()["user"];
+        $this->id           = $this->getGet("id");
+        $this->comment      = ModelFactory::getModel("Comment")->readData($this->id, "id");
+        $this->article      = ModelFactory::getModel("Article")->readData($this->comment["articleId"], "id");
+        $this->loggedUser   = $this->getSession()["user"];
 
         return $this->twig->render("alert/commentAlertDelete.twig", [
-            "article" => $article,
-            "comment" => $comment,
-            "loggedUser" => $user
+            "article"       => $this->article,
+            "comment"       => $this->comment,
+            "loggedUser"    => $this->loggedUser
         ]);
     }
-
 
 }

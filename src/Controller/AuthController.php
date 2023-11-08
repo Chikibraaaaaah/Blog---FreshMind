@@ -13,14 +13,14 @@ class AuthController extends MainController
 
     public function defaultMethod()
     {
-        
+        $this->redirect("auth_register");
     }
 
     // Render Functions
 
     public function createAccountMethod()
     {
-        $alert = $this->getSession()["alert"] ?? [];
+        $alert = $this->getAlert()["alert"] ?? [];
 
         return $this->twig->render("auth/createAccount.twig", ["alert" => $alert]);
     }

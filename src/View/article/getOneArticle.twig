@@ -54,6 +54,7 @@
             <div class="col mt-5">
                 <article class="article d-flex flex-column mx-auto col-8 mx-auto">
                 
+                    {% if loggedUser.role == 1 or loggedUser.id == article.authorId %}
 
                     <form action="index.php?access=article_update&id={{article.id}}" name="article" enctype="multipart/form-data" method="POST" class="row d-flex justify-content-center m-2">
                             
@@ -67,19 +68,6 @@
                                 <textarea type="text" name="content" rows="10" class="d-block">{{article.content}}</textarea>
                             </div>
 
-                            <figure class="figure d-flex row m-3">
-                            <figcaption class="text-center">Photo actuelle</figcaption>
-                            
-                                <img src="{{ article.imgUrl }}" alt="{{ article.altImg }}">
-                            
-                            </figure>
-
-                            <div class="form-container row d-flex flex-row justify-content-around">
-                                <input type="file" name="img" class="d-block"> 
-                            </div>
-                            
-                            
-                            {% if loggedUser.role == 1 or loggedUser.id == article.authorId %}
                                 <div class="row d-flex flex-row justify-content-around m-3">
                     
                                     <button class="btn  col-3">
@@ -90,11 +78,20 @@
                                         <a href="index.php?access=article_get&id={{article.id}}">Annuler</a>
                                     </button>
                                 </div>
-                                
-                            {% endif %} 
-                    
                     </form>
-                    
+
+                    <figure class="figure d-flex row m-3">
+                                <figcaption class="text-center">Photo actuelle</figcaption>
+                                <img src="{{ article.imgUrl }}" alt="{{ article.altImg }}">
+                            </figure>
+
+                        <form action="index.php?access=article_update&id={{article.id}}" name="article" enctype="multipart/form-data" method="POST">
+                            <input type="file" name="img">
+                            <button class="btn" type="submit">k</button>
+                        </form>
+
+                            
+                    {% endif %} 
                 </article>
             </div>
         </div>

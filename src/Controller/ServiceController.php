@@ -9,6 +9,12 @@ use RuntimeException;
 class ServiceController extends GlobalsController
 {
 
+    private $extension;
+
+    private $MIME;
+
+    private $destination;
+
     public function defaultMethod()
     {
     }
@@ -30,9 +36,9 @@ class ServiceController extends GlobalsController
                 throw new RuntimeException('Taille maiximale 1MB.');
             }
 
-            $ext = $this->checkFileMime();
+            $this->extension = $this->checkFileMime();
 
-            $fileDestination = sprintf(
+            $this->destination = sprintf(
                 './img/%s.%s',
                 sha1_file($this->getFiles()['img']['tmp_name']),
                 $ext
@@ -40,11 +46,11 @@ class ServiceController extends GlobalsController
 
             // You should name it uniquely!
             // On this example, obtain safe unique name from its binary data!
-            if (move_uploaded_file($this->getFiles()['img']['tmp_name'], $fileDestination) === FALSE) {
+            if (move_uploaded_file($this->getFiles()['img']['tmp_name'], $this->destination) === FALSE) {
                 throw new RuntimeException('Il y a eu un problème lors du déplacement du fichier.');
             }
 
-            return $fileDestination;
+            return $this->destination;
 
         } catch (RuntimeException $e) {
                 echo $e->getMessage();
@@ -70,7 +76,7 @@ class ServiceController extends GlobalsController
     public function checkFileMime()
     {
         // Check MIME Type by yourself!
-        $fileMimeType = mime_content_type($this->getFiles()['img']['tmp_name']);
+        $this->MIME = mime_content_type($this->getFiles()['img']['tmp_name']);
         $validMimeTypes = [
             "jpg"   => "image/jpg",
             "jpeg"  => "image/jpeg",
@@ -78,27 +84,32 @@ class ServiceController extends GlobalsController
             "gif"   => "image/gif"
         ];
 
-        $ext = array_search($fileMimeType, $validMimeTypes, true);
+        $this->extension = array_search($this->MIME, $validMimeTypes, true);
 
-        if ($ext === false) {
-            return $this->setSession(["alert" => "danger", "message" => "Format invalide."]);
+        if ($this->extension === false) {
+            return $this->setSession([
+                "alert"     => "danger",
+                "message"   => "Format invalide."
+            ]);
         // Throw new RuntimeException('Invalid file format.')!
         }
 
-        return $ext;
+        return $this->extension;
     }
 
     public function updatePicture()
     {
         if ($this->getFiles()["img"]["size"] > 0 && $this->getFiles()["img"]["size"] < 1000000) {
             $fileInput = new ServiceController();
-            $destination = $fileInput->uploadFile();
+            $this->destination = $fileInput->uploadFile();
            
-            return $destination;
+            return $this->destination;
         }
 
-        return $this->setSession(["alert" => "danger", "message" => "Veuillez choisir un fichier."]);
+        return $this->setSession([
+            "alert"     => "danger",
+            "message"   => "Veuillez choisir un fichier."
+        ]);
     }
-
 
 }

@@ -8,77 +8,121 @@ use RuntimeException;
 
 class ArticleController extends MainController
 {
+
+    private $articleId;
+
+    private $article;
+
+    private $alert;
+
+    private $loggedUser;
+
+    private $destination;
+
+    private $relatedComments;
+
+
+    /**
+     * A description of the entire PHP function.
+     *
+     * @throws Some_Exception_Class description of exception
+     */
     public function defaultMethod()
     {
-
+        $this->redirect("home");
     }
 
+
+    /**
+     * Generates a new article method.
+     *
+     * @return string The rendered template.
+     */
     public function newArticleMethod()
     {
-        $loggedUser = $this->getSession("user");
+        $this->loggedUser = $this->getSession("user");
+        $this->alert      = $this->getAlert() ?? [];
 
-        return $this->twig->render("article/createArticle.twig", ["loggedUser" => $loggedUser]);
+        return $this->twig->render("article/createArticle.twig", [
+            "alert"         => $this->alert,
+            "loggedUser"    => $this->loggedUser
+        ]);
     }
 
+
+    /**
+     * Creates a new article.
+     *
+     * @throws Some_Exception_Class description of exception
+     * @return Some_Return_Value
+     */
     public function createMethod()
     {
-        $destination = new ServiceController();
-        $article = [
-            "title"     => $this->encodeString($this->getPost("title")),
-            "content"   => $this->encodeString($this->getPost("content")),
-            "imgUrl"    => $destination->uploadFile(),
-            "imgAlt"    => $this->encodeString($this->getPost("alt")),
-            "createdAt" => date("Y-m-d H:i:s")
-        ];
+        $this->destination    = new ServiceController();
+        $this->article        = [
+                                    "title"     => $this->encodeString($this->getPost("title")),
+                                    "content"   => $this->encodeString($this->getPost("content")),
+                                    "imgUrl"    => $destination->uploadFile(),
+                                    "imgAlt"    => $this->encodeString($this->getPost("alt")),
+                                    "createdAt" => date("Y-m-d H:i:s")
+                                ];
 
-        $newArticle = ModelFactory::getModel("Article")->createData($article);
-
+        $newArticle = ModelFactory::getModel("Article")->createData($this->article);
         $this->setSession([
-            "alert" => "success",
-            "message" => "Votre article a été créé"
+            "alert"     => "success",
+            "message"   => "Votre article a été créé"
         ]);
         $this->redirect("home");
     }
 
+
+    /**
+     * Retrieves the method and returns the rendered template.
+     *
+     * @return string The rendered template.
+     */
     public function getMethod()
     {
-        $loggedUser = $this->getSession("user");
-        $article = $this->getById();
-        $relatedComments = ModelFactory::getModel("Comment")->listData($article["id"], "articleId");
+        $this->loggedUser         = $this->getSession("user") ?? [];
+        $this->article            = $this->getById();
+        $this->relatedComments    = ModelFactory::getModel("Comment")->listData($this->article["id"], "articleId");
+        $this->alert              = $this->getAlert() ?? [];
 
         return $this->twig->render("article/getOneArticle.twig", [
-            "article" => $article,
-            "loggedUser" => $loggedUser,    
-            "relatedComments" => $relatedComments
+            "article"           => $this->article,
+            "loggedUser"        => $this->loggedUser,    
+            "relatedComments"   => $this->relatedComments,
+            "alert"             => $this->alert
         ]);
     }
 
 
+    /**
+     * Retrieves an article by its ID.
+     *
+     * @return mixed The article data.
+     */
     protected function getById()
     {
-        $articleId = $this->getGet("id");
-        $article = ModelFactory::getModel("Article")->readData($articleId,"id");
+        $articleId  = $this->getGet("id");
+        $article    = ModelFactory::getModel("Article")->readData($articleId,"id");
 
         return $article;
     }
 
+
+    /**
+     * Updates the method.
+     *
+     * @throws Some_Exception_Class description of exception
+     * @return Some_Return_Value
+     */
     public function updateMethod()
     {
-        $existingArticle = $this->getById();
-        $destination = $existingArticle["imgUrl"];
-
-        var_dump($this->getFiles());
-        die();
-
-        if ($this->getFiles()["img"]["size"] > 0 && $this->getFiles()["img"]["size"] < 1000000) {
-            $destination = new ServiceController();
-            $newFile = $destination->uploadFile();
-        }
+        $this->article = $this->getById();
 
         if ($this->checkInputs() === TRUE) {
-            $updatedArticle = array_merge($existingArticle, $this->getPost());
-      
-            $updatedArticle["imgUrl"]       = $newFile ?? $existingArticle["imgUrl"];
+            $updatedArticle = array_merge($this->article, $this->getPost());
             $updatedArticle["imgAlt"]       = $this->encodeString($this->getPost("content"));
             $updatedArticle["title"]        = $this->encodeString($updatedArticle["title"]);
             $updatedArticle["content"]      = $this->encodeString($updatedArticle["content"]);
@@ -86,8 +130,8 @@ class ArticleController extends MainController
 
             ModelFactory::getModel("Article")->updateData((int) $updatedArticle["id"], $updatedArticle);
             $this->setSession([
-                "alert" => "success",
-                "message" => "L'article a bien été mis à jour."
+                "alert"     => "success",
+                "message"   => "L'article a bien été mis à jour."
             ]);
 
             return $this->getMethod();
@@ -95,24 +139,35 @@ class ArticleController extends MainController
     }
 
 
+    /**
+     * Confirm the delete method.
+     *
+     * @return string The rendered view.
+     */
     public function confirmDeleteMethod()
     {
-        $articleId  = $this->getGet("id");
-        $article    = $this->getById();
-        $loggedUser = $this->getSession("user");
+        $this->articleId  = $this->getGet("id");
+        $this->article    = $this->getById();
+        $this->loggedUser = $this->getSession("user");
 
         return $this->twig->render("alert/articleDeleteAlert.twig", [
-            "article"       => $article,
-            "loggedUser"    => $loggedUser
+            "article"       => $this->article,
+            "loggedUser"    => $this->loggedUser
         ]);
     }
 
 
+    /**
+     * Deletes a method.
+     *
+     * @throws Some_Exception_Class description of exception
+     * @return Some_Return_Value
+     */
     public function deleteMethod()
     {
-        $id = $this->getGet("id");
+        $this->articleId = $this->getGet("id");
 
-        ModelFactory::getModel("Article")->deleteData($id);
+        ModelFactory::getModel("Article")->deleteData($this->articleId);
         $this->setSession([
             "alert"     => "success",
             "message"   => "L'article a bien été supprimé."
@@ -120,14 +175,20 @@ class ArticleController extends MainController
         $this->redirect("home");
     }
 
+
+    /**
+     * Modify the method.
+     *
+     * @return string The rendered template.
+     */
     public function modifyMethod()
     {
-        $article    = $this->getById();
-        $loggedUser = $this->getSession("user");
+        $this->article    = $this->getById();
+        $this->loggedUser = $this->getSession("user");
 
         return $this->twig->render("article/getOneArticle.twig", [
-            "article"       => $article,
-            "loggedUser"    => $loggedUser,
+            "article"       => $this->article,
+            "loggedUser"    => $this->loggedUser,
             "method"        => "PUT"
         ]);
     }

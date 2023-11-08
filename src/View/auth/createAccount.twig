@@ -4,6 +4,9 @@
 {% block createAccount %}
 <h1>Hello</h1>
   {% if alert %}
+
+  <p>simpple alert</p>
+  <p>{{alert}}</p>
   
     <div class="alert alert-{{ alert.alert }} alert-dismissible fade show" role="alert">
       {{ alert.message }}
