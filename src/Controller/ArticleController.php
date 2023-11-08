@@ -17,7 +17,7 @@ class ArticleController extends MainController
     {
         $loggedUser = $this->getSession("user");
 
-        return $this->twig->render("article/articleCreate.twig", ["loggedUser" => $loggedUser]);
+        return $this->twig->render("article/createArticle.twig", ["loggedUser" => $loggedUser]);
     }
 
     public function createMethod()
@@ -46,7 +46,7 @@ class ArticleController extends MainController
         $article = $this->getById();
         $relatedComments = ModelFactory::getModel("Comment")->listData($article["id"], "articleId");
 
-        return $this->twig->render("article/articleDetail.twig", [
+        return $this->twig->render("article/getOneArticle.twig", [
             "article" => $article,
             "loggedUser" => $loggedUser,    
             "relatedComments" => $relatedComments
@@ -98,7 +98,7 @@ class ArticleController extends MainController
         $article    = $this->getById();
         $loggedUser = $this->getSession("user");
 
-        return $this->twig->render("alert/alertDeleteArticle.twig", [
+        return $this->twig->render("alert/articleDeleteAlert.twig", [
             "article"       => $article,
             "loggedUser"    => $loggedUser
         ]);
@@ -122,7 +122,7 @@ class ArticleController extends MainController
         $article    = $this->getById();
         $loggedUser = $this->getSession("user");
 
-        return $this->twig->render("article/articleDetail.twig", [
+        return $this->twig->render("article/getOneArticle.twig", [
             "article"       => $article,
             "loggedUser"    => $loggedUser,
             "method"        => "PUT"

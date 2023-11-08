@@ -15,8 +15,8 @@
             <div class="col mt-5">
                 <article class="article d-flex flex-column mx-auto">
                     <h2 class="title"> {{ article.title }} - {{ article.createdAt }}</h2>
-                    <figure>
-                        <img src="{{ article.imgUrl }}"width="300"alt="{{ article.altImg }}">
+                    <figure class="figure ">
+                        <img class="object-fit-contain " style="width: 80%;" src="{{ article.imgUrl }}"width="300"alt="{{ article.altImg }}">
                         <figcaption>{{ article.content }}</figcaption>
                         {% if loggedUser.role == 1 or loggedUser.id == article.authorId %}
                             <button>
@@ -36,7 +36,7 @@
             <aside>
                 {% block comments %}
                     {% if relatedComments %}
-                        {% include "comment/commentList.twig" %}
+                        {% include "comment/listComments.twig" %}
                     {% else %}
                         <p>Soyez-le premier à commenter.</p>
                     {% endif %}

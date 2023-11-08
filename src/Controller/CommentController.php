@@ -35,7 +35,7 @@ class CommentController extends MainController
         $article = ModelFactory::getModel("Article")->readData($id, "id");
         $relatedComments = ModelFactory::getModel("Comment")->listData($article["id"], "articleId");
 
-        return $this->twig->render("article/articleDetail.twig", [
+        return $this->twig->render("article/getOneArticle.twig", [
             "article" => $article,
             "loggedUser" => $this->getSession()["user"],
             "relatedComments" => $relatedComments
@@ -50,7 +50,7 @@ class CommentController extends MainController
         $article            = ModelFactory::getModel("Article")->readData($comment["articleId"], "id");
         $relatedComments    = ModelFactory::getModel("Comment")->listData($article["id"], "articleId");
 
-        return $this->twig->render("comment/commentDetail.twig", [
+        return $this->twig->render("comment/getComment.twig", [
             "article"           => $article,
             "comment"           => $comment,
             "relatedComments"   => $relatedComments,
@@ -90,7 +90,7 @@ class CommentController extends MainController
         $article = ModelFactory::getModel("Article")->readData($comment["articleId"], "id");
         $user = $this->getSession()["user"];
 
-        return $this->twig->render("alert/alertDeleteComment.twig", [
+        return $this->twig->render("alert/commentAlertDelete.twig", [
             "article" => $article,
             "comment" => $comment,
             "loggedUser" => $user
