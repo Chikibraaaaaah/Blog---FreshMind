@@ -132,9 +132,20 @@ class UserController extends MainController
         $test = $this->sendMailMethod($this->subject, $this->content, $this->receiver);
     }
 
+    public function contactMethod()
+    {
+        $form = $this->getPost();
+        $this->receiver = "tristanriedinger@gmail.com";
+        $this->subject = $form["precision"];
+        $this->content = $form["demande"];
+
+        $this->sendMailMethod($this->subject, $this->content, $this->receiver);
+        
+
+    }
+
     public function sendMailMethod($subject, $content, $receiver)
     {
-
         $this->receiver = $receiver;
         $this->subject = $subject;
         $this->content = $content;        // Créer un objet de transport SMTP
@@ -146,7 +157,7 @@ class UserController extends MainController
         $this->mailer = new Swift_Mailer($this->transport);
 
         // Créer un objet de message
-        $this->message = new Swift_Message("Sujet du message");
+        $this->message = new Swift_Message($subject);
         $this->message->setFrom("tristanriedinger@gmail.com", "Tristan Riedinger - Admin Blog");
         $this->message->setTo($this->receiver);
         $this->message->setBody($this->content);
@@ -156,9 +167,15 @@ class UserController extends MainController
 
         // Vérifier le résultat de l"envoi
         if ($result) {
-            $this->alert = "Message envoyé avec succès !";
+            $this->setSession([
+                "alert" => "success",
+                "message" => "Votre message a bien été envoyé."
+            ]);
         } else {
-            $this->alert = "Le message n\'a pas pu être envoyé.";
+            $this->setSession([
+                "alert" => "error",
+                "message" => "Un problème est survenu"
+            ]);
         }
 
         $this->redirect("home");

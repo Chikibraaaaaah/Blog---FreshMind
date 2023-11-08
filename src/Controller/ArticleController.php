@@ -67,6 +67,9 @@ class ArticleController extends MainController
         $existingArticle = $this->getById();
         $destination = $existingArticle["imgUrl"];
 
+        var_dump($this->getFiles());
+        die();
+
         if ($this->getFiles()["img"]["size"] > 0 && $this->getFiles()["img"]["size"] < 1000000) {
             $destination = new ServiceController();
             $newFile = $destination->uploadFile();
