@@ -32,7 +32,6 @@ class HomeController extends MainController
         $loggedUser = $this->getSession("user") ?? [];
         $alert = $this->getSession()["alert"] ?? [];
 
-
         return $this->twig->render("home.twig", [
             "articles" => $articles,
             "loggedUser" => $loggedUser,

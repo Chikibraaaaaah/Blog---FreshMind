@@ -20,33 +20,25 @@ class AuthController extends MainController
 
     public function createAccountMethod()
     {
-
         $alert = $this->getSession()["alert"] ?? [];
 
-
         return $this->twig->render("auth/createAccount.twig", ["alert" => $alert]);
-
     }
 
 
     public function registerMethod()
     {
-
         $alert =  $this->getSession("alert") ?? [];
 
         return $this->twig->render("auth/register.twig", ["alert" => $alert]);
-
     }
 
     public function resetPasswordMethod()
     {
-
         $alert =  $this->getSession("alert") ?? [];
 
         return $this->twig->render("auth/resetPassword.twig", ["alert" => $alert]);
-
     }
-
 
     // Interactions functions
 
@@ -54,13 +46,9 @@ class AuthController extends MainController
 
     public function loginMethod()
     {
-
         $user = $this->checkByEmail();
 
         if(count($user) > 0) {
-
-            // var_dump($this->getPost("password"));
-
             if (password_verify($this->getPost("password"), $user["password"]) === TRUE) {
                 $user["lastConnexion"] = date("Y-m-d H:i:s");
                 ModelFactory::getModel("User")->updateData($user["id"], $user);
@@ -68,8 +56,6 @@ class AuthController extends MainController
                 $this->setSession(["alert" => "success", "message" => "Connexion réussie."]);
                 $this->redirect("home");
             }
-
-           
         }
 
         $this->setSession(["alert" => "danger", "message" => "Mot de passe incorrect."]);
@@ -148,9 +134,15 @@ class AuthController extends MainController
 
     $userFound = $this->checkByEmail();
 
+    // var_dump($userFound);
+    // die();
 
-    if ($userFound === FALSE) {
-        $this->setSession(["alert" => "danger", "message" => "Cet email est déjà utilisé."]);
+    if ($userFound === TRUE) {
+        $this->setSession([
+            "alert"     => "danger",
+            "message"   => "Cet email est déjà utilisé."
+        ]);
+
         return $this->registerMethod();
     }
 
@@ -158,8 +150,8 @@ class AuthController extends MainController
 
     if ($mpChek === FALSE) {
         $this->setSession([
-            "alert" => "danger",
-            "message" => "Les mots de passe ne correspondent pas."
+            "alert"     => "danger",
+            "message"   => "Les mots de passe ne correspondent pas."
         ]);
         return $this->createAccountMethod();
     }

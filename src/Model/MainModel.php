@@ -46,6 +46,7 @@ abstract class MainModel
     public function listData(string $value=null, string $key=null)
     {
         if (isset($key) === TRUE) {
+            
             $query = "SELECT * FROM " . $this->table . " WHERE " . $key . " = ?";
 
             return $this->database->getAllData($query, [$value]);

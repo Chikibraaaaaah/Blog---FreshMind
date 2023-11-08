@@ -2,6 +2,14 @@
 
 {% block article %}
 
+    {% if alert %}
+    
+       <p>{{ alert.message }}</p>
+       <p>{{ alert }}</p>
+    
+    {% endif %}
+
+
     {% if method != "PUT" %}
         <div class="row mt-3">
             <div class="col mt-5">
@@ -12,7 +20,7 @@
                         <figcaption>{{ article.content }}</figcaption>
                         {% if loggedUser.role == 1 or loggedUser.id == article.authorId %}
                             <button>
-                                <a href="index.php?access=article_get&id={{article.id}}">Modifier</a>
+                                <a href="index.php?access=article_modify&id={{article.id}}">Modifier</a>
                             </button>
                             <button>
                                 <a href="index.php?access=article_confirmDelete&id={{article.id}}">Supprimer</a>
@@ -56,10 +64,11 @@
                             
                             <div class="form-container row d-flex flex-row justify-content-around">
                                 <label for="title" class="form-label d-block">Nouveau contenu</label>
-                                <textarea type="text" name="content">{{article.content}}</textarea>
+                                <textarea type="text" name="content" rows="10" class="d-block">{{article.content}}</textarea>
                             </div>
 
                             <figure class="figure d-flex row m-3">
+                            <figcaption class="text-center">Photo actuelle</figcaption>
                             
                                 <img src="{{ article.imgUrl }}" alt="{{ article.altImg }}">
                             
@@ -74,7 +83,7 @@
                                 <div class="row d-flex flex-row justify-content-around m-3">
                     
                                     <button class="btn  col-3">
-                                        Modifier
+                                        <a href="index.php?access=article_update&id={{article.id}}">Confirmer</a>
                                     </button>
 
                                     <button class="btn  col-3 ">

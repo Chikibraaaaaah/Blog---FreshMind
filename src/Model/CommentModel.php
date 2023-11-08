@@ -6,5 +6,5 @@ use App\Model\Factory\ModelFactory;
 
 class CommentModel extends MainModel
 {
-    
+
 }

@@ -3,10 +3,33 @@
 namespace App\Controller;
 
 use App\Model\Factory\ModelFactory;
-
+use Swift_Message;
+use Swift_Mailer;
+use Swift_SmtpTransport;
 
 class UserController extends MainController
 {
+
+    private $email;
+
+    private $alert;
+
+    private $password;
+
+    private $receiver;
+
+    private $subject;
+
+    private $content;
+
+    private $transport;
+
+    private $mailer;
+
+    private $message;
+
+
+
     public function defaultMethod()
     {
 
@@ -82,6 +105,66 @@ class UserController extends MainController
             return $this->getUserMethod();
         }
     }
+
+    public function getByEmail()
+    {
+        $this->email = $this->getPost("email");
+        $user = ModelFactory::getModel("User")->readData($this->email, "email",["password"]);
+
+        if ($user === FALSE) {
+            $this->setSession([
+                "alert"     => "error",
+                "message"   => "Cet email n'est pas connu de nos services."
+            ]);
+        }
+
+        return $user;
+    }
+
+    public function passwordForgetMethod()
+    {
+        $user = $this->getByEmail();
+        $this->email = $user["email"];
+        $this->receiver = $this->email;
+        $this->subject = "Réinitialisez votre mot de passe";
+        $this->content = "Bonjour " . $user["userName"] . ",\n\nVous avez demandé de réinitialisez votre mot de passe.\nPour cela, veuillez cliquer sur le lien suivant : http://localhost:8888/Blog/BlogFinal/public/index.php?access=auth_resetPassword\nBisous carresse";
+
+        $test = $this->sendMailMethod($this->subject, $this->content, $this->receiver);
+    }
+
+    public function sendMailMethod($subject, $content, $receiver)
+    {
+
+        $this->receiver = $receiver;
+        $this->subject = $subject;
+        $this->content = $content;        // Créer un objet de transport SMTP
+        $this->transport = new Swift_SmtpTransport("smtp.gmail.com", 587, "tls");
+        $this->transport->setUsername("tristanriedinger@gmail.com");
+        $this->transport->setPassword("xvajpmjxxczmfnxb");
+
+        // Créer un objet de messagerie
+        $this->mailer = new Swift_Mailer($this->transport);
+
+        // Créer un objet de message
+        $this->message = new Swift_Message("Sujet du message");
+        $this->message->setFrom("tristanriedinger@gmail.com", "Tristan Riedinger - Admin Blog");
+        $this->message->setTo($this->receiver);
+        $this->message->setBody($this->content);
+
+        // Envoyer le message
+        $result = $this->mailer->send($this->message);
+
+        // Vérifier le résultat de l"envoi
+        if ($result) {
+            $this->alert = "Message envoyé avec succès !";
+        } else {
+            $this->alert = "Le message n\'a pas pu être envoyé.";
+        }
+
+        $this->redirect("home");
+
+    }
+
 
 
 
