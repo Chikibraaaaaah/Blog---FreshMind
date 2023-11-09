@@ -13,6 +13,8 @@ class CommentController extends MainController
 
     private $comment;
 
+    private $comments = [];
+
     private $article;
 
     private $loggedUser;
@@ -26,6 +28,7 @@ class CommentController extends MainController
 
     public function createMethod()
     {
+
         $this->comment = [
             "authorId"  => (int) $this->getSession("user")["id"],
             "articleId" => (int) $this->getGet("id"),

@@ -24,11 +24,17 @@
 
             <div class="row mb-6">
                 <div class="col mt-5">
-                    {% block about %}{% endblock %}
-                    {% block form %}{% endblock %}
+
+                {% block auth %}
+                                    {% block createAccount %}{% endblock %}
                     {% block register %}{% endblock %}
                     {% block reset %}{% endblock %}
-                    {% block createAccount %}{% endblock %}
+
+                
+                {% endblock %}
+                    {% block about %}{% endblock %}
+                    {% block form %}{% endblock %}
+
                 </div>
             </div>
 

@@ -1,6 +1,8 @@
 {% block comments %}
     {% for comment in relatedComments | sort((a, b) => a.createdAt <=> b.createdAt) | reverse %}
         <ul class="list-group">
+        {% if comment.approuved == 1 %}
+        
             <li class="d-flex justify-content-around list-group-item text-left">
                 <div class="d-flex flex-row col">
                     <figure class="figure col-2">
@@ -19,6 +21,10 @@
                     </div>
                 </div>
             </li>
+
+        {% endif %}
+        
+
         </ul>
     {% endfor %}
 {% endblock %}

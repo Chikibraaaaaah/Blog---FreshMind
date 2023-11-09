@@ -14,6 +14,8 @@ class UserController extends MainController
 
     private $loggedUser;
 
+    private $usersToApprouve = [];
+
     private $email;
 
     private $alert;
@@ -47,12 +49,15 @@ class UserController extends MainController
         $this->user       = $this->getUserById();
         $this->alert      = $this->getSession("alert") ?? [];
         $this->loggedUser = $this->getSession("user");
+        $this->usersToApprouve = new AdminController();
+        $this->usersToApprouve = $this->usersToApprouve->getUnapprouvedUsers();
 
         return $this->twig->render("user/userProfile.twig", [
             "user"          => $this->user,
             "alert"         => $this->alert,
             "loggedUser"    => $this->loggedUser,
-            "method"        => "GET"
+            "method"        => "GET",
+            "waitings"      => $this->usersToApprouve
         ]);
     }
 
@@ -72,7 +77,7 @@ class UserController extends MainController
                 "alert"     => "error",
                 "message"   => "Veuillez sélecitonner une image."
             ]);
-            return $this->getUserMethod();
+            $this->redirect("user_get", ["id" => $this->user["id"]]);
         }
 
         $fileInput              = new ServiceController();
@@ -87,7 +92,7 @@ class UserController extends MainController
             "message"   => "Votre photo de profil a bien été mise à jour."
         ]);
 
-        return $this->getUserMethod();
+        $this->redirect("user_get", ["id" => $this->user["id"]]);
 
     }
 
@@ -109,7 +114,7 @@ class UserController extends MainController
             $updatedUser = array_merge($this->user, $this->getPost());
             ModelFactory::getModel("User")->updateData((int) $updatedUser["id"], $updatedUser);
 
-            return $this->getUserMethod();
+            $this->redirect("user_get", ["id" => $updatedUser["id"]]);
         }
     }
 

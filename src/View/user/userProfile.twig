@@ -26,12 +26,7 @@
           {% endif %}
 
           {% if loggedUser.role > 0 %}
-            <div class="row">
-              <h2 class="text-center mb-4">A valider</h2>
-              {% for waiting in waitings %}
-                <p>{{ waiting }}</p>
-              {% endfor %}
-            </div>
+            {% include "user/unapprouvedUsers.twig" %}
           {% endif %}
 
           <div class="row gutters-sm">
