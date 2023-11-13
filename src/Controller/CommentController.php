@@ -9,17 +9,13 @@ class CommentController extends MainController
 
     private $alert;
 
-    private $id;
-
     private $comment;
-
-    private $comments = [];
 
     private $article;
 
     private $loggedUser;
 
-    private $relatedComments;
+    private $relatedComments = [];
 
     public function defaultMethod()
     {
@@ -94,10 +90,10 @@ class CommentController extends MainController
 
     public function deleteMethod()
     {
-        $this->id       = $this->getGet("id");
-        $this->comment  = ModelFactory::getModel("Comment")->readData($this->id, "id");
+        $this->comment["id"]       = $this->getGet("id");
+        $this->comment  = ModelFactory::getModel("Comment")->readData($this->comment["id"], "id");
 
-        ModelFactory::getModel("Comment")->deleteData($this->id);
+        ModelFactory::getModel("Comment")->deleteData($this->comment["id"]);
         $this->setSession([
             "alert"     => "success",
             "message"   => "Commentaire supprimé"
@@ -107,8 +103,8 @@ class CommentController extends MainController
 
     public function confirmDeleteMethod()
     {
-        $this->id           = $this->getGet("id");
-        $this->comment      = ModelFactory::getModel("Comment")->readData($this->id, "id");
+        $this->comment["id"]           = $this->getGet("id");
+        $this->comment      = ModelFactory::getModel("Comment")->readData($this->comment["id"], "id");
         $this->article      = ModelFactory::getModel("Article")->readData($this->comment["articleId"], "id");
         $this->loggedUser   = $this->getSession()["user"];
 

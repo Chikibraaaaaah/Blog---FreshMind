@@ -16,61 +16,36 @@ abstract class GlobalsController
     /**
      * @var array
      */
-
     private $alert = [];
 
     /**
      * @var array
      */
-
-    private $env = [];
-
-    /**
-     * @var array
-     */
-
     private $file = [];
 
     /**
      * @var array
      */
-
     private $files = [];
 
     /**
      * @var array
      */
-
     private $get = [];
 
     /**
      * @var array
      */
-
     private $post = [];
 
     /**
      * @var array
      */
-
-    private $request = [];
-
-    /**
-     * @var array
-     */
-
-    private $server = [];
-
-    /**
-     * @var array
-     */
-
     private $session = [];
 
     /**
      * @var array
      */
-
     private $user = [];
 
     /**
@@ -81,13 +56,9 @@ abstract class GlobalsController
     public function __construct()
     {
 
-        $this->env      = filter_input_array(INPUT_ENV) ?? [];
         $this->get      = filter_input_array(INPUT_GET) ?? [];
         $this->post     = filter_input_array(INPUT_POST) ?? [];
-        $this->server   = filter_input_array(INPUT_SERVER) ?? [];
-
         $this->files    = filter_var_array($_FILES) ?? [];
-        $this->request  = filter_var_array($_REQUEST) ?? [];
 
         if (isset($this->files["file"]) === TRUE) {
             $this->file = $this->files["file"];
@@ -183,23 +154,9 @@ abstract class GlobalsController
 
             echo filter_var($this->alert["message"]);
 
+
             unset($_SESSION["alert"]);
         }
-    }
-
-
-    /**
-     * Get Env Array or Env Var
-     * @param null|string $var
-     * @return array|string
-     */
-    protected function getEnv(string $var=null)
-    {
-        if ($var === null) {
-            return $this->env;
-        }
-
-        return $this->env[$var] ?? "";
     }
 
 
@@ -249,36 +206,6 @@ abstract class GlobalsController
         }
 
         return $this->post[$var] ??"";
-    }
-
-
-    /**
-     * Get Request Array or Request Var
-     * @param null|string $var
-     * @return array|string
-     */
-    protected function getRequest(string $var = null)
-    {
-        if($var === null) {
-            return $this->request;
-        }
-
-        return $this->request[$var] ??"";
-    }
-
-
-    /**
-     * Get Server Array or Server Var
-     * @param null|string $var
-     * @return array|string
-     */
-    protected function getServer(string $var = null)
-    {
-        if ($var === null) {
-            return $this->server;
-        }
-
-        return $this->server[$var] ??"";
     }
 
 

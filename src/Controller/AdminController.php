@@ -11,16 +11,15 @@ use RuntimeException;
 class AdminController extends MainController
 {
 
-    private $commentsToValidate;
+    private $commentsToValidate = [];
 
-    private $usersToApprouve;
+    private $usersToApprouve = [];
 
     public function getUnvalidComments()
     {
         $this->commentsToValidate = ModelFactory::getModel("Comment")->listData(0, "approuved", "ASC");
 
         return $this->commentsToValidate;
-
     }
 
     public function validateComment($comment)

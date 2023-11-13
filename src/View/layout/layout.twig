@@ -26,11 +26,9 @@
                 <div class="col mt-5">
 
                 {% block auth %}
-                                    {% block createAccount %}{% endblock %}
+                    {% block createAccount %}{% endblock %}
                     {% block register %}{% endblock %}
                     {% block reset %}{% endblock %}
-
-                
                 {% endblock %}
                     {% block about %}{% endblock %}
                     {% block form %}{% endblock %}
@@ -42,16 +40,13 @@
             
                 {% block content %}
 
-
                     {% block article %}
 
-                    {% block update %}
-                    
-                    {% endblock %}
+                        {% block update %}{% endblock %}
 
-                    {% block comments %}{% endblock %}
+                        {% block comments %}{% endblock %}
 
-                    {% block commentDetail %}{% endblock %}
+                        {% block commentDetail %}{% endblock %}
 
                     {% endblock %}
                     

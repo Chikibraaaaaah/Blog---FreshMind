@@ -16,25 +16,11 @@ class UserController extends MainController
 
     private $usersToApprouve = [];
 
-    private $email;
-
-    private $alert;
-
-    private $password;
+    private $alert = [];
 
     private $destination;
 
-    private $receiver;
-
-    private $subject;
-
-    private $content;
-
-    private $transport;
-
-    private $mailer;
-
-    private $message;
+    private $email; 
 
     private $form;
 
@@ -71,7 +57,6 @@ class UserController extends MainController
 
     public function updatePictureMethod()
     {
-
         if ($this->getFIles()["img"]["size"] == 0){
             $this->setSession([
                 "alert"     => "error",
@@ -81,9 +66,8 @@ class UserController extends MainController
         }
 
         $fileInput              = new ServiceController();
-        $this->destination      = $fileInput->updatePicture();
         $this->user             = $this->getUserById();
-        $this->user["imgUrl"]   = $this->destination;
+        $this->user["imgUrl"]   = $fileInput->updatePicture();;
 
         ModelFactory::getModel("User")->updateData((int) $this->user["id"], $this->user);
      
@@ -93,7 +77,6 @@ class UserController extends MainController
         ]);
 
         $this->redirect("user_get", ["id" => $this->user["id"]]);
-
     }
 
     public function editUserProfileMethod()
@@ -120,8 +103,8 @@ class UserController extends MainController
 
     public function getByEmail()
     {
-        $this->email    = $this->getPost("email");
-        $this->user     = ModelFactory::getModel("User")->readData($this->email, "email",["password"]);
+        $this->user["email"]    = $this->getPost("email");
+        $this->user             = ModelFactory::getModel("User")->readData($this->user["email"], "email",["password"]);
 
         if ($this->user === FALSE) {
             $this->setSession([
@@ -135,45 +118,44 @@ class UserController extends MainController
 
     public function passwordForgetMethod()
     {
-        $this->user     = $this->getByEmail();
-        $this->email    = $this->user["email"];
-        $this->receiver = $this->email;
-        $this->subject  = "Réinitialisez votre mot de passe";
-        $this->content  = "Bonjour " . $this->user["userName"] . ",\n\nVous avez demandé de réinitialisez votre mot de passe.\nPour cela, veuillez cliquer sur le lien suivant : http://localhost:8888/Blog/BlogFinal/public/index.php?access=auth_resetPassword\nBisous carresse";
+        $this->user                 = $this->getByEmail();
+        $this->email["receiver"]    = $this->user["email"];
+        $this->email["subject"]     = "Réinitialisez votre mot de passe";
+        $this->email["content"]     = "Bonjour " . $this->user["userName"] . ",\n\nVous avez demandé de réinitialisez votre mot de passe.\nPour cela, veuillez cliquer sur le lien suivant : http://localhost:8888/Blog/BlogFinal/public/index.php?access=auth_resetPassword\nBisous carresse";
 
-        $mail = $this->sendMailMethod($this->subject, $this->content, $this->receiver);
+        $mail = $this->sendMailMethod($this->email["subject"], $this->email["content"], $this->email["receiver"]);
     }
 
     public function contactMethod()
     {
-        $this->form     = $this->getPost();
-        $this->receiver = "tristanriedinger@gmail.com";
-        $this->subject  = $form["precision"];
-        $this->content  = $form["demande"];
+        $this->form                 = $this->getPost();
+        $this->email["receiver"]    = "tristanriedinger@gmail.com";
+        $this->email["subject"]     = $form["precision"];
+        $this->email["content"]     = $form["demande"];
 
-        $this->sendMailMethod($this->subject, $this->content, $this->receiver);
+        $this->sendMailMethod($this->email["subject"], $this->email["content"], $this->email["receiver"]);
     }
 
     public function sendMailMethod($subject, $content, $receiver)
     {
-        $this->receiver     = $receiver;
-        $this->subject      = $subject;
-        $this->content      = $content;        // Créer un objet de transport SMTP
-        $this->transport    = new Swift_SmtpTransport("smtp.gmail.com", 587, "tls");
-        $this->transport->setUsername("tristanriedinger@gmail.com");
-        $this->transport->setPassword("xvajpmjxxczmfnxb");
+        $this->email["receiver"]     = $receiver;
+        $this->email["subject"]      = $subject;
+        $this->email["content"]      = $content;        // Créer un objet de transport SMTP
+        $this->email["transport"]    = new Swift_SmtpTransport("smtp.gmail.com", 587, "tls");
+        $this->email["transport"]->setUsername("tristanriedinger@gmail.com");
+        $this->email["transport"]->setPassword("xvajpmjxxczmfnxb");
 
         // Créer un objet de messagerie
-        $this->mailer = new Swift_Mailer($this->transport);
+        $mailer = new Swift_Mailer($this->email["transport"]);
 
         // Créer un objet de message
-        $this->message = new Swift_Message($subject);
-        $this->message->setFrom("tristanriedinger@gmail.com", "Tristan Riedinger - Admin Blog");
-        $this->message->setTo($this->receiver);
-        $this->message->setBody($this->content);
+        $this->email = new Swift_Message($subject);
+        $this->email->setFrom("tristanriedinger@gmail.com", "Tristan Riedinger - Admin Blog");
+        $this->email->setTo($this->email["receiver"]);
+        $this->email->setBody($this->email["content"]);
 
         // Envoyer le message
-        $result = $this->mailer->send($this->message);
+        $result = $mailer->send($this->email);
 
         // Vérifier le résultat de l"envoi
         if ($result) {

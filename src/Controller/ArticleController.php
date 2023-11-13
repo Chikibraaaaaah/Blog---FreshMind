@@ -9,15 +9,11 @@ use RuntimeException;
 class ArticleController extends MainController
 {
 
-    private $articleId;
-
     private $article;
 
     private $alert;
 
     private $loggedUser;
-
-    private $destination;
 
     private $relatedComments;
 
@@ -58,16 +54,16 @@ class ArticleController extends MainController
      */
     public function createMethod()
     {
-        $this->destination    = new ServiceController();
+        $this->article["imgUrl"]    = new ServiceController();
         $this->article        = [
                                     "title"     => $this->encodeString($this->getPost("title")),
                                     "content"   => $this->encodeString($this->getPost("content")),
-                                    "imgUrl"    => $destination->uploadFile(),
+                                    "imgUrl"    => $this->article["imgUrl"]->uploadFile(),
                                     "imgAlt"    => $this->encodeString($this->getPost("alt")),
                                     "createdAt" => date("Y-m-d H:i:s")
                                 ];
 
-        $newArticle = ModelFactory::getModel("Article")->createData($this->article);
+        ModelFactory::getModel("Article")->createData($this->article);
         $this->setSession([
             "alert"     => "success",
             "message"   => "Votre article a été créé"
@@ -146,7 +142,7 @@ class ArticleController extends MainController
      */
     public function confirmDeleteMethod()
     {
-        $this->articleId  = $this->getGet("id");
+        $this->article["id"]  = $this->getGet("id");
         $this->article    = $this->getById();
         $this->loggedUser = $this->getSession("user");
 
@@ -165,9 +161,9 @@ class ArticleController extends MainController
      */
     public function deleteMethod()
     {
-        $this->articleId = $this->getGet("id");
+        $this->article["id"] = $this->getGet("id");
 
-        ModelFactory::getModel("Article")->deleteData($this->articleId);
+        ModelFactory::getModel("Article")->deleteData($this->article["id"]);
         $this->setSession([
             "alert"     => "success",
             "message"   => "L'article a bien été supprimé."

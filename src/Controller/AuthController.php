@@ -12,13 +12,7 @@ class AuthController extends MainController
 
     private $user;
 
-    private $userName;
-
-    private $email;
-
     private $loggedUser;
-
-    private $password;
 
     private $secondPassword;
 
@@ -129,10 +123,10 @@ class AuthController extends MainController
 
     private function checkPasswordsCorrespond()
     {
-        $this->password         = $this->getPost("password");
+        $this->user["password"]         = $this->getPost("password");
         $this->secondPassword   = $this->getPost("passwordMatch");
 
-        if ($this->password !== $this->secondPassword) {
+        if ($this->user["password"] !== $this->secondPassword) {
             $this->setSession([
                 "alert"     => "danger",
                 "message"   => "Les mots de passe ne correspondent pas."]
@@ -146,8 +140,8 @@ class AuthController extends MainController
 
     private function checkByUserName()
     {
-        $this->userName = $this->getPost("userName");
-        $this->user     = ModelFactory::getModel("User")->readData($userName,"userName");
+        $this->user["userName"] = $this->getPost("userName");
+        $this->user     = ModelFactory::getModel("User")->readData($this->user["userName"],"userName");
 
         if ($this->user === TRUE) {
             return $this->user;
@@ -157,8 +151,8 @@ class AuthController extends MainController
     private function checkByEmail()
     {
 
-        $this->email    = $this->getPost("email");
-        $userFound      = ModelFactory::getModel("User")->readData($this->email,"email");
+        $this->user["email"]    = $this->getPost("email");
+        $userFound      = ModelFactory::getModel("User")->readData($this->user["email"],"email");
 
         return $userFound;
 
