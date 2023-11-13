@@ -1,4 +1,4 @@
-{% block comments %}
+{% block comment %}
     {% for comment in relatedComments | sort((a, b) => a.createdAt <=> b.createdAt) | reverse %}
         <ul class="list-group">
         {% if comment.approuved == 1 %}
