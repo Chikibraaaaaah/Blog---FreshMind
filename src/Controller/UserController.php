@@ -3,9 +3,13 @@
 namespace App\Controller;
 
 use App\Model\Factory\ModelFactory;
-use Swift_Message;
-use Swift_Mailer;
-use Swift_SmtpTransport;
+use Symfony\Bridge\Twig\Mime\BodyRenderer;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\EventDispatcher\EventDispatcher;
+use Symfony\Component\Mailer\EventListener\MessageListener;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Twig\Environment as TwigEnvironment;
 
 class UserController extends MainController
 {
@@ -136,42 +140,66 @@ class UserController extends MainController
         $this->sendMailMethod($this->email["subject"], $this->email["content"], $this->email["receiver"]);
     }
 
-    public function sendMailMethod($subject, $content, $receiver)
+    // public function sendMailMethod($subject, $content, $receiver)
+    // {
+    //     $this->email["receiver"]     = $receiver;
+    //     $this->email["subject"]      = $subject;
+    //     $this->email["content"]      = $content;        // Créer un objet de transport SMTP
+    //     $this->email["transport"]    = new Swift_SmtpTransport("smtp.gmail.com", 587, "tls");
+    //     $this->email["transport"]->setUsername("tristanriedinger@gmail.com");
+    //     $this->email["transport"]->setPassword("xvajpmjxxczmfnxb");
+
+    //     // Créer un objet de messagerie
+    //     $mailer = new Swift_Mailer($this->email["transport"]);
+
+    //     // Créer un objet de message
+    //     $this->email = new Swift_Message($subject);
+    //     $this->email->setFrom("tristanriedinger@gmail.com", "Tristan Riedinger - Admin Blog");
+    //     $this->email->setTo($this->email["receiver"]);
+    //     $this->email->setBody($this->email["content"]);
+
+    //     // Envoyer le message
+    //     $result = $mailer->send($this->email);
+
+    //     // Vérifier le résultat de l"envoi
+    //     if ($result) {
+    //         $this->setSession([
+    //             "alert"     => "success",
+    //             "message"   => "Votre message a bien été envoyé."
+    //         ]);
+    //     } else {
+    //         $this->setSession([
+    //             "alert"     => "error",
+    //             "message"   => "Un problème est survenu"
+    //         ]);
+    //     }
+
+    //     $this->redirect("home");
+
+    // }
+
+    public function sendMailMethod()
     {
-        $this->email["receiver"]     = $receiver;
-        $this->email["subject"]      = $subject;
-        $this->email["content"]      = $content;        // Créer un objet de transport SMTP
-        $this->email["transport"]    = new Swift_SmtpTransport("smtp.gmail.com", 587, "tls");
-        $this->email["transport"]->setUsername("tristanriedinger@gmail.com");
-        $this->email["transport"]->setPassword("xvajpmjxxczmfnxb");
+        $messageListener = new MessageListener(null, new BodyRenderer($this->twig));
 
-        // Créer un objet de messagerie
-        $mailer = new Swift_Mailer($this->email["transport"]);
+        var_dump($messageListener);
+        die();
 
-        // Créer un objet de message
-        $this->email = new Swift_Message($subject);
-        $this->email->setFrom("tristanriedinger@gmail.com", "Tristan Riedinger - Admin Blog");
-        $this->email->setTo($this->email["receiver"]);
-        $this->email->setBody($this->email["content"]);
+        $eventDispatcher = new EventDispatcher();
+        $eventDispatcher->addSubscriber($messageListener);
 
-        // Envoyer le message
-        $result = $mailer->send($this->email);
+        $transport = Transport::fromDsn('smtp://localhost', $eventDispatcher);
+        $mailer = new Mailer($transport, null, $eventDispatcher);
 
-        // Vérifier le résultat de l"envoi
-        if ($result) {
-            $this->setSession([
-                "alert"     => "success",
-                "message"   => "Votre message a bien été envoyé."
-            ]);
-        } else {
-            $this->setSession([
-                "alert"     => "error",
-                "message"   => "Un problème est survenu"
-            ]);
-        }
-
-        $this->redirect("home");
-
+        $email = (new TemplatedEmail())
+            // ...
+            ->htmlTemplate('emails/signup.html.twig')
+            ->context([
+                'expiration_date' => new \DateTime('+7 days'),
+                'username' => 'foo',
+            ])
+        ;
+        $mailer->send($email);
     }
 
 

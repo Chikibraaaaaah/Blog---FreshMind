@@ -71,7 +71,7 @@ class AuthController extends MainController
 
         if(count($this->user) > 0) {
             if (password_verify($this->getPost("password"), $this->user["password"]) === TRUE) {
-                $this->user["lastConnexion"] = date("Y-m-d H:i:s");
+                $this->user["updatedAt"] = date("Y-m-d H:i:s");
                 ModelFactory::getModel("User")->updateData($this->user["id"], $this->user);
                 $this->setSession($this->user, true);
                 $this->setSession([

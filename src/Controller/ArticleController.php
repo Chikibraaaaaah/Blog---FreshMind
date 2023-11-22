@@ -55,13 +55,13 @@ class ArticleController extends MainController
     public function createMethod()
     {
         $this->article["imgUrl"]    = new ServiceController();
-        $this->article        = [
-                                    "title"     => $this->encodeString($this->getPost("title")),
-                                    "content"   => $this->encodeString($this->getPost("content")),
-                                    "imgUrl"    => $this->article["imgUrl"]->uploadFile(),
-                                    "imgAlt"    => $this->encodeString($this->getPost("alt")),
-                                    "createdAt" => date("Y-m-d H:i:s")
-                                ];
+        $this->article              = [
+                                            "title"     => $this->encodeString($this->getPost("title")),
+                                            "content"   => $this->encodeString($this->getPost("content")),
+                                            "imgUrl"    => $this->article["imgUrl"]->uploadFile(),
+                                            "imgAlt"    => $this->encodeString($this->getPost("alt")),
+                                            "createdAt" => date("Y-m-d H:i:s")
+                                        ];
 
         ModelFactory::getModel("Article")->createData($this->article);
         $this->setSession([
@@ -81,7 +81,8 @@ class ArticleController extends MainController
     {
         $this->loggedUser         = $this->getSession("user") ?? [];
         $this->article            = $this->getById();
-        $this->relatedComments    = ModelFactory::getModel("Comment")->listData($this->article["id"], "articleId");
+        $this->relatedComments    = ModelFactory::getModel("Comment")->listComment($this->article["id"], "articleId");
+
         $this->alert              = $this->getAlert() ?? [];
 
         return $this->twig->render("article/getOneArticle.twig", [
@@ -98,7 +99,7 @@ class ArticleController extends MainController
      *
      * @return mixed The article data.
      */
-    protected function getById()
+    private function getById()
     {
         $articleId  = $this->getGet("id");
         $article    = ModelFactory::getModel("Article")->readData($articleId,"id");

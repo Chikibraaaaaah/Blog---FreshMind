@@ -3,9 +3,9 @@
     "description": "Blog perso",
     "type": "project",
     "require": {
-        "swiftmailer/swiftmailer": "^6.3",
         "tracy/tracy": "^2.9.7",
-        "twig/twig": "^3.7"
+        "twig/twig": "^3.7",
+        "symfony/mailer": "^6.3"
     },
     "autoload": {
         "psr-4": {

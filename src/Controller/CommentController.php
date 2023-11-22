@@ -58,9 +58,9 @@ class CommentController extends MainController
     public function modifyMethod()
     {
         // Récuperer comment dans les comments
-        $this->comment            = ModelFactory::getModel("Comment")->readData($this->getGet("id"), "id");
+        $this->comment            = ModelFactory::getModel("Comment")->readComment($this->getGet("id"), "comment.id");
         $this->article            = ModelFactory::getModel("Article")->readData($this->comment["articleId"], "id");
-        $this->relatedComments    = ModelFactory::getModel("Comment")->listData($this->article["id"], "articleId");
+        $this->relatedComments    = ModelFactory::getModel("Comment")->listComment($this->article["id"], "articleId");
 
         return $this->twig->render("comment/getComment.twig", [
             "article"           => $this->article,
@@ -114,5 +114,15 @@ class CommentController extends MainController
             "loggedUser"    => $this->loggedUser
         ]);
     }
+
+    // public function testMethod()
+    // {
+    //     $this->comment["id"]           = 32;
+    //     $this->comment      = ModelFactory::getModel("Comment")->readData($this->comment["id"], "id");
+    //     $om = ModelFactory::getModel("Comment")->readComment($this->comment["id"], "comment.id");
+
+    //     var_dump($om);
+    //     die();
+    // }
 
 }
