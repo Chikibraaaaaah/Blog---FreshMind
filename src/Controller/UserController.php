@@ -28,6 +28,10 @@ class UserController extends MainController
 
     private $form;
 
+    private $comments = [];
+
+    private $articlesCommented = [];
+
 
     public function defaultMethod()
     {
@@ -41,13 +45,17 @@ class UserController extends MainController
         $this->loggedUser = $this->getSession("user");
         $this->usersToApprouve = new AdminController();
         $this->usersToApprouve = $this->usersToApprouve->getUnapprouvedUsers();
+        $this->comments = $this->getActivity()["comments"];
+        $this->articlesCommented = $this->getActivity()["articles"];
 
         return $this->twig->render("user/userProfile.twig", [
             "user"          => $this->user,
             "alert"         => $this->alert,
             "loggedUser"    => $this->loggedUser,
             "method"        => "GET",
-            "waitings"      => $this->usersToApprouve
+            "waitings"      => $this->usersToApprouve,
+            "comments"      => count($this->comments),
+            "articles"      => count($this->articlesCommented)
         ]);
     }
 
@@ -200,6 +208,13 @@ class UserController extends MainController
             ])
         ;
         $mailer->send($email);
+    }
+
+    public function getActivity()
+    {
+        $comments = ModelFactory::getModel("Comment")->listComment($this->getGet("id"), "comment.authorId");
+        $uniqueArticleIds = array_unique(array_column($comments, 'articleId'));
+        return ["comments" => $comments, "articles" => $uniqueArticleIds];
     }
 
 

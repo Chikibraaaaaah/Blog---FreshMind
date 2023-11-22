@@ -34,9 +34,16 @@ class AdminController extends MainController
         return $this->usersToApprouve;
     }
 
-    public function approuveUserMethod($user)
+    public function approuveUserMethod()
     {
-        return $user["approuved"] = 1;
+        $id = $this->getGet("id");
+
+        ModelFactory::getModel("User")->updateData($id, ["approuved" => 1]);
+        $this->setSession([
+            "alert"     => "success",
+            "message"   => "L'utilisateur a bien été approuvé."
+        ]);
+        $this->redirect("home");
     }
 
 }

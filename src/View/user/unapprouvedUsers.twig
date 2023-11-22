@@ -8,7 +8,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ waiting.firstname }} {{ waiting.lastname }}</h5>
                                 <p class="card-text">{{ waiting.email }}</p>
-                                <a href="index.php?access=admin_" class="btn btn-primary">Valider</a>
+                                <a href="index.php?access=admin_approuveUser&id={{ waiting.id }}" class="btn btn-primary">Valider</a>
                         </div>
                     </li>
                 {% endfor %}
