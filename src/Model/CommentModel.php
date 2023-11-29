@@ -15,9 +15,9 @@ class CommentModel extends MainModel
 
     private string $approuved;
 
-    private \DateTime $createdAt;
+    private DateTime $createdAt;
 
-    private \DateTime $updatedAt;
+    private DateTime $updatedAt;
 
     public function readComment(string $value, string $key=null)
     {
@@ -40,10 +40,10 @@ class CommentModel extends MainModel
     {
         if (isset($key) === TRUE) {
             
-            $query = $query = " SELECT comment.*, user.userName
-                                FROM " . $this->table . " AS comment
-                                INNER JOIN user ON user.id = comment.authorId
-                                WHERE " . $key . " = ?";
+            $query = " SELECT comment.*, user.userName
+                        FROM " . $this->table . " AS comment
+                        INNER JOIN user ON user.id = comment.authorId
+                        WHERE " . $key . " = ?";
 
             return $this->database->getAllData($query, [$value]);
         }

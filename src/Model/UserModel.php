@@ -10,11 +10,11 @@ class UserModel extends MainModel
 
     private string $password;
 
-    private \boolean $role;
+    private bool $role;
 
-    private \boolean $approuved;
+    private bool $approuved;
 
-    private \DateTime $createdAt;
+    private DateTime $createdAt;
 
-    private \DateTime $updatedAt;
+    private DateTime $updatedAt;
 }
