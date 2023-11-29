@@ -18,7 +18,11 @@ class UserController extends MainController
 
     private $loggedUser;
 
-    private $usersToApprouve = [];
+    private $unapprouvedUsers = [];
+
+    private $unapprouvedComments = [];
+
+    private $adminController;
 
     private $alert = [];
 
@@ -40,22 +44,24 @@ class UserController extends MainController
 
     public function getUserMethod()
     {
-        $this->user       = $this->getUserById();
-        $this->alert      = $this->getSession("alert") ?? [];
-        $this->loggedUser = $this->getSession("user");
-        $this->usersToApprouve = new AdminController();
-        $this->usersToApprouve = $this->usersToApprouve->getUnapprouvedUsers();
-        $this->comments = $this->getActivity()["comments"];
-        $this->articlesCommented = $this->getActivity()["articles"];
+        $this->user                 = $this->getUserById();
+        $this->alert                = $this->getSession("alert") ?? [];
+        $this->loggedUser           = $this->getSession("user");
+        $this->adminController      = new AdminController();
+        $this->unapprouvedUsers     = $this->adminController->getUnapprouvedUsers();
+        $this->unapprouvedComments  = $this->adminController->getUnapprouvedComments();
+        $this->comments             = $this->getActivity()["comments"];
+        $this->articlesCommented    = $this->getActivity()["articles"];
 
         return $this->twig->render("user/userProfile.twig", [
-            "user"          => $this->user,
-            "alert"         => $this->alert,
-            "loggedUser"    => $this->loggedUser,
-            "method"        => "GET",
-            "waitings"      => $this->usersToApprouve,
-            "comments"      => count($this->comments),
-            "articles"      => count($this->articlesCommented)
+            "user"                  => $this->user,
+            "alert"                 => $this->alert,
+            "loggedUser"            => $this->loggedUser,
+            "method"                => "GET",
+            "unapprouvedUsers"      => $this->unapprouvedUsers,
+            "unapprouvedComments"   => $this->unapprouvedComments,
+            "comments"              => count($this->comments),
+            "articles"              => count($this->articlesCommented)
         ]);
     }
 

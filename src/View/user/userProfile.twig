@@ -26,7 +26,9 @@
           {% endif %}
 
           {% if loggedUser.role > 0 %}
-            {% include "user/unapprouvedUsers.twig" %}
+            <div class="row mb-2">
+              {% include "user/unapprouved.twig" %}
+            </div>
           {% endif %}
 
           <div class="row gutters-sm">

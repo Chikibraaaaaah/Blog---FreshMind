@@ -15,9 +15,9 @@ class AdminController extends MainController
 
     private $usersToApprouve = [];
 
-    public function getUnvalidComments()
+    public function getUnapprouvedComments()
     {
-        $this->commentsToValidate = ModelFactory::getModel("Comment")->listData(0, "approuved", "ASC");
+        $this->commentsToValidate = ModelFactory::getModel("Comment")->listComment(0, "Comment.approuved", "ASC");
 
         return $this->commentsToValidate;
     }

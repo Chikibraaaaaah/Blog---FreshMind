@@ -1,0 +1,50 @@
+{% block content %}
+
+      <div class="row">
+        <div class="col-6">
+            <h2 class="text-center mb-4">Utilisateur(s) en attente</h2>
+              {% if unapprouvedUsers %}
+                <ul style="max-height: 150px; overflow:scroll" class="list-group">
+                  {% for unapprouvedUser in unapprouvedUsers %}
+                    <li>
+                      <div class="col card d-flex flex-row">
+                          <div class="card-body col-8">
+                            <h5 class="card-title">{{ unapprouvedUser.userName }}</h5>
+                            <p class="card-text">{{ unapprouvedUser.email }}</p>
+                        </div>
+                        <a href="index.php?access=admin_approuveUser&id={{ unapprouvedUser.id }}" class="col-3 m-auto">Valider</a>
+                        <a href="index.php?access=admin_" class="col-3 m-auto">Refuser</a>
+
+                      </div>
+                    </li>
+                  {% endfor %}
+                </ul>
+              {% else %}
+                <p class="col-6">Aucun utilisateur en attente</p>
+              {% endif %}
+          </div>
+
+          <div class="col-6">
+            <h2 class="text-center mb-4">Commentaire(s) à valider</h2>
+   
+            {% if unapprouvedComments %}
+              <ul style="max-height: 150px; overflow:scroll" class="list-group">
+               
+                  {% for unapprouvedComment in unapprouvedComments %}
+                    <li>
+                      <div class="card">
+                        <div class="card-body">
+                          <h5 class="card-title">{{ unapprouvedComment.userName }}</h5>
+                          <p class="card-text">{{ unapprouvedComment.content }}</p>
+                        </div>
+                      </div>
+                    </li>
+                  {% endfor %}
+                
+              </ul>
+              
+            {% endif %}
+            
+          </div>
+      </div>
+{% endblock %}
