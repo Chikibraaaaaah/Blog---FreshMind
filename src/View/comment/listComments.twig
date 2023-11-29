@@ -1,0 +1,31 @@
+{% block comment %}
+    {% for comment in relatedComments | sort((a, b) => a.createdAt <=> b.createdAt) | reverse %}
+        <ul class="list-group">
+        {% if comment.approuved == 1 %}
+        
+            <li class="d-flex justify-content-around list-group-item text-left">
+                <div class="d-flex flex-row col">
+                    <figure class="figure col-2">
+                        <img src="{{ comment.authorAvatar }}" class="rounded-circle" alt="Photo de profile">
+                        <figcaption>{{ comment.userName }}</figcaption>
+                    </figure>
+                    <div class="col-8">
+                        <p class="text-break overflow-hidden">{{ comment.content }}</p>
+                        <p>Mise à jour le {{ comment.updatedAt | date("d/m/Y à H:i:s")}} </p>
+                    </div>  
+                    <div class="btn col-2 text-center align-self-center">
+                        {% if comment.authorId == loggedUser.id or loggedUser.role == 1 %}
+                            <button class="btn"><a href="index.php?access=comment_modify&id={{ comment.id }}">Modifier</a></button>
+                            <button><a href="index.php?access=comment_confirmDelete&id={{ comment.id }}">Supprimer</a></button>
+                        {% endif %}
+                    </div>
+                </div>
+            </li>
+
+        {% endif %}
+        
+
+        </ul>
+    {% endfor %}
+{% endblock %}
+

@@ -1,23 +1,27 @@
 {% extends "layout/layout.twig" %}
 
-  {% block register %}
+  {% block auth %}
 
     <div class="container">
 
-    <div class="row mt-5">
+
+
+      <div class="row">
+
+      <h2 class="text-center mb-5">Connectez-vous</h2>
+
+          <div class="row mt-5">
     
       {% if alert %}
         <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert">
           {{ alert.message }}
+
+          <p>{{alert}}</p>
           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       {% endif %}
     
     </div>
-
-      <div class="row">
-
-      <h2 class="text-center mb-5">Connectez-vous</h2>
       
       <form action="index.php?access=auth_login" method="POST">
         

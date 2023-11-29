@@ -8,111 +8,186 @@ use RuntimeException;
 
 class ArticleController extends MainController
 {
+
+    private $article;
+
+    private $alert;
+
+    private $loggedUser;
+
+    private $relatedComments;
+
+
+    /**
+     * A description of the entire PHP function.
+     *
+     * @throws Some_Exception_Class description of exception
+     */
     public function defaultMethod()
     {
+        $this->redirect("home");
     }
 
+
+    /**
+     * Generates a new article method.
+     *
+     * @return string The rendered template.
+     */
     public function newArticleMethod()
     {
+        $this->loggedUser = $this->getSession("user");
+        $this->alert      = $this->getAlert() ?? [];
 
-        $loggedUser = $this->getSession("user");
-
-        return $this->twig->render("article/articleCreate.twig", ["loggedUser" => $loggedUser]);
-
+        return $this->twig->render("article/createArticle.twig", [
+            "alert"         => $this->alert,
+            "loggedUser"    => $this->loggedUser
+        ]);
     }
 
-    public function createArticleMethod()
+
+    /**
+     * Creates a new article.
+     *
+     * @throws Some_Exception_Class description of exception
+     * @return Some_Return_Value
+     */
+    public function createMethod()
     {
+        $this->article["imgUrl"]    = new ServiceController();
+        $this->article              = [
+                                            "title"     => $this->encodeString($this->getPost("title")),
+                                            "content"   => $this->encodeString($this->getPost("content")),
+                                            "imgUrl"    => $this->article["imgUrl"]->uploadFile(),
+                                            "imgAlt"    => $this->encodeString($this->getPost("alt")),
+                                            "createdAt" => date("Y-m-d H:i:s")
+                                        ];
 
-        $destination = new ServiceController();
-        $article = [
-            "title"     => $this->encodeString($this->getPost("title")),
-            "content"   => $this->encodeString($this->getPost("content")),
-            "imgUrl"    => $destination->uploadFile(),
-            "imgAlt"    => $this->encodeString($this->getPost("alt")),
-            "createdAt" => date("Y-m-d H:i:s")
-        ];
-
-        ModelFactory::getModel("Article")->createData($article);
+        ModelFactory::getModel("Article")->createData($this->article);
         $this->setSession([
-            "alert" => "success",
-            "message" => "Votre article a été créé"
+            "alert"     => "success",
+            "message"   => "Votre article a été créé"
         ]);
         $this->redirect("home");
-
     }
 
-    public function getArticleMethod()
+
+    /**
+     * Retrieves the method and returns the rendered template.
+     *
+     * @return string The rendered template.
+     */
+    public function getMethod()
     {
+        $this->loggedUser         = $this->getSession("user") ?? [];
+        $this->article            = $this->getById();
+        $this->relatedComments    = ModelFactory::getModel("Comment")->listComment($this->article["id"], "articleId");
 
-        $loggedUser = $this->getSession("user");
-        $article = $this->getArticleById();
-        $relatedComments = ModelFactory::getModel("Comment")->listData($article["id"], "articleId");
+        $this->alert              = $this->getAlert() ?? [];
 
-        return $this->twig->render("article/articleDetail.twig", [
-            "article" => $article,
-            "loggedUser" => $loggedUser,    
-            "relatedComments" => $relatedComments
+        return $this->twig->render("article/getOneArticle.twig", [
+            "article"           => $this->article,
+            "loggedUser"        => $this->loggedUser,    
+            "relatedComments"   => $this->relatedComments,
+            "alert"             => $this->alert
         ]);
-
     }
 
 
-    protected function getArticleById()
+    /**
+     * Retrieves an article by its ID.
+     *
+     * @return mixed The article data.
+     */
+    private function getById()
     {
-        $articleId = $this->getGet("id");
-        $article = ModelFactory::getModel("Article")->readData($articleId,"id");
+        $articleId  = $this->getGet("id");
+        $article    = ModelFactory::getModel("Article")->readData($articleId,"id");
 
         return $article;
     }
 
-    public function updateArticleMethod()
-    {
-        $existingArticle = $this->getArticleById();
-        $destination = $existingArticle["imgUrl"];
 
-        if ($this->getFiles()["img"]["size"] > 0 && $this->getFiles()["img"]["size"] < 1000000) {
-            $destination = new ServiceController();
-            $newFile = $destination->uploadFile();
-        }
+    /**
+     * Updates the method.
+     *
+     * @throws Some_Exception_Class description of exception
+     * @return Some_Return_Value
+     */
+    public function updateMethod()
+    {
+        $this->article = $this->getById();
 
         if ($this->checkInputs() === TRUE) {
-            $updatedArticle = array_merge($existingArticle, $this->getPost());
-            $updatedArticle["imgUrl"] = $newFile;
+            $updatedArticle = array_merge($this->article, $this->getPost());
             $updatedArticle["imgAlt"]       = $this->encodeString($this->getPost("content"));
             $updatedArticle["title"]        = $this->encodeString($updatedArticle["title"]);
             $updatedArticle["content"]      = $this->encodeString($updatedArticle["content"]);
             $updatedArticle["updatedAt"]    = date("Y-m-d H:i:s");
 
             ModelFactory::getModel("Article")->updateData((int) $updatedArticle["id"], $updatedArticle);
-
-            $this->redirect("article_renderArticle", [
-                "id" => (int) $updatedArticle["id"]
+            $this->setSession([
+                "alert"     => "success",
+                "message"   => "L'article a bien été mis à jour."
             ]);
+
+            return $this->getMethod();
         }
     }
 
 
-    public function confirmDeleteArticleMethod()
+    /**
+     * Confirm the delete method.
+     *
+     * @return string The rendered view.
+     */
+    public function confirmDeleteMethod()
     {
-        $articleId = $this->getGet("id");
-        $article = $this->getArticleById();
-        $loggedUser = $this->getSession("user");
+        $this->article["id"]  = $this->getGet("id");
+        $this->article    = $this->getById();
+        $this->loggedUser = $this->getSession("user");
 
-        return $this->twig->render("alert/alertDeleteArticle.twig", [
-            "article" => $article,
-            "loggedUser" => $loggedUser
+        return $this->twig->render("alert/articleDeleteAlert.twig", [
+            "article"       => $this->article,
+            "loggedUser"    => $this->loggedUser
         ]);
     }
 
 
-    public function deleteArticleMethod()
+    /**
+     * Deletes a method.
+     *
+     * @throws Some_Exception_Class description of exception
+     * @return Some_Return_Value
+     */
+    public function deleteMethod()
     {
-        $id = $this->getGet("id");
-        ModelFactory::getModel("Article")->deleteData($id);
-        
-        $this->setSession(["alert" => "success", "message" => "L'article a bien été supprimé."]);
+        $this->article["id"] = $this->getGet("id");
+
+        ModelFactory::getModel("Article")->deleteData($this->article["id"]);
+        $this->setSession([
+            "alert"     => "success",
+            "message"   => "L'article a bien été supprimé."
+        ]);
         $this->redirect("home");
+    }
+
+
+    /**
+     * Modify the method.
+     *
+     * @return string The rendered template.
+     */
+    public function modifyMethod()
+    {
+        $this->article    = $this->getById();
+        $this->loggedUser = $this->getSession("user");
+
+        return $this->twig->render("article/getOneArticle.twig", [
+            "article"       => $this->article,
+            "loggedUser"    => $this->loggedUser,
+            "method"        => "PUT"
+        ]);
     }
 
 }

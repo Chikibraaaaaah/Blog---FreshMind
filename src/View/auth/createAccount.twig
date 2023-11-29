@@ -1,26 +1,22 @@
 {% extends "layout/layout.twig" %}
 
-{% block createAccount %}
+{% block auth %}
+  <h1>Hello</h1>
+    {% if alert %}
 
-    <div class="row mt-5">
+      <p>simpple alert</p>
+      <p>{{alert}}</p>
     
-      {% if alert %}
-        {# <div class="alert alert-{{ alert.type }} alert-dismissible fade show" role="alert">
-          {{ alert.message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div> #}
-
-        <p>{{ alert }}</p>
-      {% endif %}
-    
-    </div>
+      <div class="alert alert-{{ alert.alert }} alert-dismissible fade show" role="alert">
+        {{ alert.message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+  
+    {% endif %}
 
   <div class="container container-fluid">
-
     <div class="row mt-5">
-
       <h2 class="text-center">Inscrivez-vous</h2>
-
       <form action="index.php?access=auth_signup" method = "POST">
 
       <!-- UserName input -->
@@ -57,22 +53,13 @@
 
           <!-- Submit button -->
         <button type="submit" class="btn btn-primary btn-block mb-4">S'inscrire</button>
-    
       </form>
-
     </div>
-
-    
 
     <!-- Register buttons -->
     <div class="text-center">
       <p>Déjà membre ? <a href="index.php?access=auth_register">Se connecter</a></p>
     </div>
-
-   
- 
-
-
   </div>
 
 {% endblock %}

@@ -1,0 +1,22 @@
+{% extends "layout/layout.twig" %}
+
+{% block content %}
+
+    <div class="row d-flex justify-content-center align-items-center " style="height: 50vh;">
+        <div class="col-6 mx-auto">
+            <form action="index.php?access=comment_delete&id={{ comment.id }}" method="post" class="row d-flex justify-content-center">
+                <p class="text-center">Êtes-vous sûr de vouloir supprimer ce commentaire ?</p>
+
+                <div class="col text-center">
+                    <button class="btn btn-danger">Supprimer</button>
+                </div>
+
+                <div class="col">
+                    <button class="btn btn-secondary"><a href="index.php?access=article_get&id={{ article.id }}">Annuler</a></button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

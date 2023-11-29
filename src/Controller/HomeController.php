@@ -14,6 +14,14 @@ use Twig\Error\SyntaxError;
  */
 class HomeController extends MainController
 {
+
+    private $articles = [];
+
+    private $alert = [];
+
+    private $loggedUser = [];
+
+
     /**
      * Renders the View Home
      * @return string
@@ -28,31 +36,31 @@ class HomeController extends MainController
      */
     public function defaultMethod()
     {
-        $articles = ModelFactory::getModel("Article")->listData();
-        $loggedUser = $this->getSession("user") ?? [];
-        $alert = $this->getSession("alert") ?? [];
+        $this->articles = ModelFactory::getModel("Article")->listData();
+        $this->loggedUser = $this->getSession("user") ?? [];
+        $this->alert = $this->getSession()["alert"] ?? [];
 
         return $this->twig->render("home.twig", [
-            "articles" => $articles,
-            "loggedUser" => $loggedUser,
-            "alert" => $alert
+            "articles" => $this->articles,
+            "loggedUser" => $this->loggedUser,
+            "alert" => $this->alert
         ]);
     }
 
     public function aboutMethod()
     {
 
-        $loggedUser = $this->getSession("user");
+        $this->loggedUser = $this->getSession("user");
 
-        return $this->twig->render('about.twig', ["loggedUser" => $loggedUser]);
+        return $this->twig->render('about.twig', ["loggedUser" => $this->loggedUser]);
     }
 
     public function contactMethod()
     {
 
-        $loggedUser = $this->getSession("user");
+        $this->loggedUser = $this->getSession("user");
 
-        return $this->twig->render('form.twig', ["loggedUser" => $loggedUser]);
+        return $this->twig->render('form.twig', ["loggedUser" => $this->loggedUser]);
     }
 
 
