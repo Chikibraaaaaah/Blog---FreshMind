@@ -42,6 +42,7 @@ class AdminController extends MainController
         ModelFactory::getModel("Comment")->updateData($id, ["approuved" => 1]);
         $this->redirect("user_getUser", ["id" => $user["id"]]);
     }
+    
 
     /**
      * Retrieves the list of unapproved users.
