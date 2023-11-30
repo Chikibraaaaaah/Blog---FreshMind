@@ -25,7 +25,7 @@
 
           <div class="col-7">
             <h2 class="text-center mb-4">Commentaire(s) à valider</h2>
-            {% if unapprouvedComment|length > 0 %}
+            {% if unapprouvedComments|length > 0 %}
 
               <ul style="max-height: 200px; overflow:scroll" class="list-group">
                   {% for unapprouvedComment in unapprouvedComments %}

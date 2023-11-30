@@ -81,7 +81,6 @@ class ArticleEntity
      * Sets the content of the object.
      *
      * @param string $content The content to set.
-     * @return void
      */
     public function setContent(string $content): void
     {

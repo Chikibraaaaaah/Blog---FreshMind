@@ -153,8 +153,7 @@ class UserController extends MainController
 
         // $this->sendMailMethod();
 
-        var_dump(getenv());
-        die();
+
         
     }
 
