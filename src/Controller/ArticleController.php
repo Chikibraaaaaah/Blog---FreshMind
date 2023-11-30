@@ -56,12 +56,12 @@ class ArticleController extends MainController
     {
         $this->article["imgUrl"]    = new ServiceController();
         $this->article              = [
-                                            "title"     => $this->encodeString($this->getPost("title")),
-                                            "content"   => $this->encodeString($this->getPost("content")),
-                                            "imgUrl"    => $this->article["imgUrl"]->uploadFile(),
-                                            "imgAlt"    => $this->encodeString($this->getPost("alt")),
-                                            "createdAt" => date("Y-m-d H:i:s")
-                                        ];
+                                        "title"     => $this->encodeString($this->getPost("title")),
+                                        "content"   => $this->encodeString($this->getPost("content")),
+                                        "imgUrl"    => $this->article["imgUrl"]->uploadFile(),
+                                        "imgAlt"    => $this->encodeString($this->getPost("alt")),
+                                        "createdAt" => date("Y-m-d H:i:s")
+                                    ];
 
         ModelFactory::getModel("Article")->createData($this->article);
         $this->setSession([
@@ -119,7 +119,7 @@ class ArticleController extends MainController
         $this->article = $this->getById();
 
         if ($this->checkInputs() === TRUE) {
-            $updatedArticle = array_merge($this->article, $this->getPost());
+            $updatedArticle                 = array_merge($this->article, $this->getPost());
             $updatedArticle["imgAlt"]       = $this->encodeString($this->getPost("content"));
             $updatedArticle["title"]        = $this->encodeString($updatedArticle["title"]);
             $updatedArticle["content"]      = $this->encodeString($updatedArticle["content"]);
@@ -143,9 +143,9 @@ class ArticleController extends MainController
      */
     public function confirmDeleteMethod()
     {
-        $this->article["id"]  = $this->getGet("id");
-        $this->article    = $this->getById();
-        $this->loggedUser = $this->getSession("user");
+        $this->article["id"]    = $this->getGet("id");
+        $this->article          = $this->getById();
+        $this->loggedUser       = $this->getSession("user");
 
         return $this->twig->render("alert/articleDeleteAlert.twig", [
             "article"       => $this->article,

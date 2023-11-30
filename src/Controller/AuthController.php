@@ -54,6 +54,7 @@ class AuthController extends MainController
         return $this->twig->render("auth/register.twig", ["alert" => $this->alert]);
     }
 
+
     public function resetPasswordMethod()
     {
         $this->alert =  $this->getAlert() ?? [];
@@ -87,8 +88,9 @@ class AuthController extends MainController
         ]);
 
         $this->redirect("auth_createAccount");
-
     }
+
+
 
     public function logoutMethod()
     {
@@ -107,6 +109,12 @@ class AuthController extends MainController
         return $this->twig->render("alert/alertDeleteAccount.twig", ["loggedUser" => $this->loggedUser]);
     }
 
+
+    /**
+     * Deletes the user account.
+     *
+     * @throws Some_Exception_Class In case of an error during deletion.
+     */
     public function deleteAccountMethod()
     {
         $id = $this->getSession("user")["id"];

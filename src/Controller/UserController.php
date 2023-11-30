@@ -3,13 +3,11 @@
 namespace App\Controller;
 
 use App\Model\Factory\ModelFactory;
-use Symfony\Bridge\Twig\Mime\BodyRenderer;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\EventDispatcher\EventDispatcher;
-use Symfony\Component\Mailer\EventListener\MessageListener;
-use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mailer\Transport;
-use Twig\Environment as TwigEnvironment;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends MainController
 {
@@ -35,6 +33,8 @@ class UserController extends MainController
     private $comments = [];
 
     private $articlesCommented = [];
+
+    private $dotenv;
 
 
     public function defaultMethod()
@@ -146,81 +146,42 @@ class UserController extends MainController
 
     public function contactMethod()
     {
-        $this->form                 = $this->getPost();
-        $this->email["receiver"]    = "tristanriedinger@gmail.com";
-        $this->email["subject"]     = $form["precision"];
-        $this->email["content"]     = $form["demande"];
+        // $this->form                 = $this->getPost();
+        // $this->email["receiver"]    = "tristanriedinger@gmail.com";
+        // $this->email["subject"]     = $this->form["precision"];
+        // $this->email["content"]     = $this->form["demande"];
 
-        $this->sendMailMethod($this->email["subject"], $this->email["content"], $this->email["receiver"]);
-    }
+        // $this->sendMailMethod();
 
-    // public function sendMailMethod($subject, $content, $receiver)
-    // {
-    //     $this->email["receiver"]     = $receiver;
-    //     $this->email["subject"]      = $subject;
-    //     $this->email["content"]      = $content;        // Créer un objet de transport SMTP
-    //     $this->email["transport"]    = new Swift_SmtpTransport("smtp.gmail.com", 587, "tls");
-    //     $this->email["transport"]->setUsername("tristanriedinger@gmail.com");
-    //     $this->email["transport"]->setPassword("xvajpmjxxczmfnxb");
-
-    //     // Créer un objet de messagerie
-    //     $mailer = new Swift_Mailer($this->email["transport"]);
-
-    //     // Créer un objet de message
-    //     $this->email = new Swift_Message($subject);
-    //     $this->email->setFrom("tristanriedinger@gmail.com", "Tristan Riedinger - Admin Blog");
-    //     $this->email->setTo($this->email["receiver"]);
-    //     $this->email->setBody($this->email["content"]);
-
-    //     // Envoyer le message
-    //     $result = $mailer->send($this->email);
-
-    //     // Vérifier le résultat de l"envoi
-    //     if ($result) {
-    //         $this->setSession([
-    //             "alert"     => "success",
-    //             "message"   => "Votre message a bien été envoyé."
-    //         ]);
-    //     } else {
-    //         $this->setSession([
-    //             "alert"     => "error",
-    //             "message"   => "Un problème est survenu"
-    //         ]);
-    //     }
-
-    //     $this->redirect("home");
-
-    // }
-
-    public function sendMailMethod()
-    {
-        $messageListener = new MessageListener(null, new BodyRenderer($this->twig));
-
-        var_dump($messageListener);
+        var_dump(getenv());
         die();
-
-        $eventDispatcher = new EventDispatcher();
-        $eventDispatcher->addSubscriber($messageListener);
-
-        $transport = Transport::fromDsn('smtp://localhost', $eventDispatcher);
-        $mailer = new Mailer($transport, null, $eventDispatcher);
-
-        $email = (new TemplatedEmail())
-            // ...
-            ->htmlTemplate('emails/signup.html.twig')
-            ->context([
-                'expiration_date' => new \DateTime('+7 days'),
-                'username' => 'foo',
-            ])
-        ;
-        $mailer->send($email);
+        
     }
+
+    public function sendEmailMethod(MailerInterface $mailer): Response
+    {
+        $email = (new Email())
+            ->from('hello@example.com')
+            ->to('alexisbateaux@gmail.com')
+            //->cc('cc@example.com')
+            //->bcc('bcc@example.com')
+            //->replyTo('fabien@example.com')
+            //->priority(Email::PRIORITY_HIGH)
+            ->subject('Time for Symfony Mailer!')
+            ->text('Sending emails is fun again!')
+            ->html('<p>See Twig integration for better HTML integration!</p>');
+
+        $mailer->send($email);
+      
+    }
+
+
 
     public function getActivity()
     {
-        $comments = ModelFactory::getModel("Comment")->listComment($this->getGet("id"), "comment.authorId");
-        $uniqueArticleIds = array_unique(array_column($comments, 'articleId'));
-        return ["comments" => $comments, "articles" => $uniqueArticleIds];
+        $comments           = ModelFactory::getModel("Comment")->listComment($this->getGet("id"), "comment.authorId");
+        $uniqueArticleIds   = array_unique(array_column($comments, 'articleId'));
+        return ["comments"  => $comments, "articles" => $uniqueArticleIds];
     }
 
 

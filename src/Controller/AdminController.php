@@ -15,6 +15,12 @@ class AdminController extends MainController
 
     private $usersToApprouve = [];
 
+
+    /**
+     * Retrieves the unapproved comments from the database.
+     *
+     * @return array The unapproved comments.
+     */
     public function getUnapprouvedComments()
     {
         $this->commentsToValidate = ModelFactory::getModel("Comment")->listComment(0, "Comment.approuved", "ASC");
@@ -22,11 +28,26 @@ class AdminController extends MainController
         return $this->commentsToValidate;
     }
 
-    public function validateComment($comment)
+
+    /**
+     * Approves a comment.
+     *
+     * @throws Some_Exception_Class if there is an error updating the comment data
+     */
+    public function approuveCommentMethod()
     {
-        return $comment["approuved"] = 1;
+        $id     = $this->getGet("id");
+        $user   = $this->getSession()["user"];
+
+        ModelFactory::getModel("Comment")->updateData($id, ["approuved" => 1]);
+        $this->redirect("user_getUser", ["id" => $user["id"]]);
     }
 
+    /**
+     * Retrieves the list of unapproved users.
+     *
+     * @return array The list of unapproved users.
+     */
     public function getUnapprouvedUsers()
     {
         $this->usersToApprouve = ModelFactory::getModel("User")->listData(0, "approuved", "ASC");
@@ -34,18 +55,24 @@ class AdminController extends MainController
         return $this->usersToApprouve;
     }
 
+
+    /**
+     * Approves a user.
+     *
+     * @throws Some_Exception_Class description of exception
+     * @return Some_Return_Value
+     */
     public function approuveUserMethod()
     {
-        $id = $this->getGet("id");
+        $id     = $this->getGet("id");
+        $user   = $this->getSession()["user"];
 
         ModelFactory::getModel("User")->updateData($id, ["approuved" => 1]);
         $this->setSession([
             "alert"     => "success",
             "message"   => "L'utilisateur a bien été approuvé."
         ]);
-        $this->redirect("home");
+        $this->redirect("user_getUser", ["id" => $user["id"]]);
     }
 
 }
-
-

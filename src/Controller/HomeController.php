@@ -36,20 +36,19 @@ class HomeController extends MainController
      */
     public function defaultMethod()
     {
-        $this->articles = ModelFactory::getModel("Article")->listData();
-        $this->loggedUser = $this->getSession("user") ?? [];
-        $this->alert = $this->getSession()["alert"] ?? [];
+        $this->articles     = ModelFactory::getModel("Article")->listData();
+        $this->loggedUser   = $this->getSession("user") ?? [];
+        $this->alert        = $this->getSession()["alert"] ?? [];
 
         return $this->twig->render("home.twig", [
-            "articles" => $this->articles,
-            "loggedUser" => $this->loggedUser,
-            "alert" => $this->alert
+            "articles"      => $this->articles,
+            "loggedUser"    => $this->loggedUser,
+            "alert"         => $this->alert
         ]);
     }
 
     public function aboutMethod()
     {
-
         $this->loggedUser = $this->getSession("user");
 
         return $this->twig->render('about.twig', ["loggedUser" => $this->loggedUser]);
@@ -57,13 +56,9 @@ class HomeController extends MainController
 
     public function contactMethod()
     {
-
         $this->loggedUser = $this->getSession("user");
 
         return $this->twig->render('form.twig', ["loggedUser" => $this->loggedUser]);
     }
-
-
-
-
+    
 }
