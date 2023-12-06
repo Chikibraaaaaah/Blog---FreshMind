@@ -2,65 +2,90 @@
 
 namespace App\Model\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
+
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="blog_user")
+ */
 class UserEntity
 {
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer", name="id")
+     */
+    private $id;
 
-    private int $id;
+    /**
+     * @ORM\Column(type="string", name="userName")
+     */
+    private $userName;
 
-    private string $userName;
+    /**
+     * @ORM\Column(type="string", name="email")
+     */
+    private $email;
 
-    private string $email;
+    /**
+     * @ORM\Column(type="string", name="password")
+     */
+    private $password;
 
-    private string $password;
+    /**
+     * @ORM\Column(type="boolean", name="role")
+     */
+    private $role;
 
-    private bool $role;
+    /**
+     * @ORM\Column(type="boolean", name="approved")
+     */
+    private $approved;
 
-    private bool $approved;
+    /**
+     * @ORM\Column(type="datetime", name="createdAt")
+     */
+    private $createdAt;
 
-    private DateTime $createdAt;
+    /**
+     * @ORM\Column(type="datetime", name="updatedAt")
+     */
+    private $updatedAt;
 
-    private DateTime $updatedAt;
+
+
+    /** Getters et Setters */
 
 
     /**
-     * Retrieves the ID of the object.
+     * Get the ID of the object.
      *
-     * @return int The ID of the object.
+     * @return int|null The ID of the object.
      */
-    public function getId(): int {
+    public function getId(): ?int
+    {
         return $this->id;
-    }
-
-
-    /**
-     * Sets the ID of the object.
-     *
-     * @param int $id The ID to set.
-     * @throws \InvalidArgumentException If the ID is not an integer.
-     * @return void
-     */
-    public function setId(int $id): void {
-        $this->id = $id;
     }
 
 
     /**
      * Retrieves the user name.
      *
-     * @return string The user name.
-     */    
-    public function getUserName(): string
+     * @return string|null The user name.
+     */
+    public function getUserName(): ?string
     {
         return $this->userName;
     }
 
 
     /**
-     * Set the user name.
+     * Sets the user name.
      *
-     * @param string $userName The new user name.
-     * @throws \Exception If an error occurs.
-     * @return void
+     * @param string $userName The user name to set.
      */
     public function setUserName(string $userName): void
     {
@@ -69,15 +94,22 @@ class UserEntity
 
 
     /**
-     * Retrieves the email of the object.
+     * Retrieves the email associated with the current object.
      *
-     * @return string The email of the object.
+     * @return string|null The email associated with the current object, or null if no email is set.
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
+
+    /**
+     * Sets the email address.
+     *
+     * @param string $email The email address to set.
+     * @return void
+     */
     public function setEmail(string $email): void
     {
         $this->email = $email;
@@ -87,19 +119,18 @@ class UserEntity
     /**
      * Retrieves the password.
      *
-     * @return string The password.
+     * @return string|null The password.
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
 
     /**
-     * Sets the password for the object.
+     * Set the password for the object.
      *
      * @param string $password The password to set.
-     * @throws Exception If an error occurs while setting the password.
      * @return void
      */
     public function setPassword(string $password): void
@@ -111,9 +142,9 @@ class UserEntity
     /**
      * Retrieves the role of the object.
      *
-     * @return bool The role of the object.
+     * @return bool|null The role of the object.
      */
-    public function getRole(): bool
+    public function getRole(): ?bool
     {
         return $this->role;
     }
@@ -122,8 +153,7 @@ class UserEntity
     /**
      * Sets the role of the object.
      *
-     * @param bool $role The role to be set.
-     * @throws Some_Exception_Class Description of exception.
+     * @param bool $role The new role value.
      * @return void
      */
     public function setRole(bool $role): void
@@ -133,11 +163,11 @@ class UserEntity
 
 
     /**
-     * Returns whether or not the entity is approved.
+     * Checks if the object is approved.
      *
-     * @return bool
+     * @return ?bool The approval status of the object.
      */
-    public function isApproved(): bool
+    public function isApproved(): ?bool
     {
         return $this->approved;
     }
@@ -147,6 +177,7 @@ class UserEntity
      * Sets the approval status of the object.
      *
      * @param bool $approved The new approval status.
+     * @return void
      */
     public function setApproved(bool $approved): void
     {
@@ -155,45 +186,45 @@ class UserEntity
 
 
     /**
-     * Get the creation date of the object.
+     * Retrieves the value of the `createdAt` property.
      *
-     * @return DateTime The creation date.
+     * @return \DateTimeInterface|null The value of the `createdAt` property.
      */
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
 
     /**
-     * Sets the value of the $createdAt property.
+     * Set the creation date of the object.
      *
-     * @param DateTime $createdAt The new value for the $createdAt property.
+     * @param \DateTimeInterface $createdAt The creation date to set.
      * @return void
      */
-    public function setCreatedAt(DateTime $createdAt): void
+    public function setCreatedAt(\DateTimeInterface $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
 
     /**
-     * Retrieves the updated at date and time.
+     * Retrieves the updated at date and time of the object.
      *
-     * @return DateTime The updated at date and time.
+     * @return \DateTimeInterface|null The updated at date and time.
      */
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
 
     /**
-     * Sets the updated date and time for the object.
+     * Sets the updated at timestamp for the object.
      *
-     * @param DateTime $updatedAt The updated date and time.
+     * @param \DateTimeInterface $updatedAt The updated at timestamp to set.
      */
-    public function setUpdatedAt(DateTime $updatedAt): void
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }

@@ -1,63 +1,92 @@
 <?php
 
-namespace App\Model\Entity;
+namespace App\Entity;
 
-class ArticleEntity 
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="blog_article")
+ */
+class ArticleEntity
 {
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer", name="id")
+     */
+    private $id;
 
-    private int $id;
 
-    private string $title;
-    
-    private string $content;
-
-    private string $imgUrl;
-
-    private string $imgAlt;
-
-    private DateTime $createdAt;
-
-    private DateTime $updatedAt;
-
+    /** @ORM\Column(type="integer", name="authorId") 
+     * @ORM\ManyToOne(targetEntity="App\Entity\UserEntity")
+     * @ORM\JoinColumn(name="authorId", referencedColumnName="id")
+    */
+    private int $authorId;
 
     /**
-     * Get the value of id
-     *
-     * @return int
+     * @ORM\Column(type="string", name="title")
      */
-    public function getId(): int
+    private $title;
+
+
+    /** @ORM\Column(type="string", name="chapô") */
+    private string $chapô;
+
+    /**
+     * @ORM\Column(type="text", name="content")
+     */
+    private $content;
+
+    /**
+     * @ORM\Column(type="string", name="imgUrl")
+     */
+    private $imgUrl;
+
+    /**
+     * @ORM\Column(type="string", name="imgAlt")
+     */
+    private $imgAlt;
+
+    /**
+     * @ORM\Column(type="datetime", name="createdAt")
+     */
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime", name="updatedAt")
+     */
+    private $updatedAt;
+
+    /** Getters et Setters */
+
+    /**
+     * Retrieves the ID of the object.
+     *
+     * @return int|null The ID of the object.
+     */
+    public function getId(): ?int
     {
         return $this->id;
     }
 
 
     /**
-     * Set the value of id
-     *
-     * @param int $id
-     * @return void
-     */
-    public function setId(int $id): void
-    {
-        $this->id = $id;
-    }
-
-
-    /**
      * Retrieves the title of the object.
      *
-     * @return string The title of the object.
+     * @return string|null The title of the object, or null if it has no title.
      */
-    public function getTitle(): string
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
 
     /**
-     * Set the title of the object.
+     * Sets the title of the object.
      *
      * @param string $title The new title to set.
+     * @throws Exception If the title is not a string.
      * @return void
      */
     public function setTitle(string $title): void
@@ -67,11 +96,11 @@ class ArticleEntity
 
 
     /**
-     * Retrieves the content of the object.
+     * Retrieves the content.
      *
-     * @return string The content of the object.
-     */    
-    public function getContent(): string
+     * @return string|null The content.
+     */
+    public function getContent(): ?string
     {
         return $this->content;
     }
@@ -81,6 +110,7 @@ class ArticleEntity
      * Sets the content of the object.
      *
      * @param string $content The content to set.
+     * @return void
      */
     public function setContent(string $content): void
     {
@@ -89,34 +119,35 @@ class ArticleEntity
 
 
     /**
-     * Retrieves the URL of the image.
+     * Retrieves the image URL.
      *
-     * @return string The URL of the image.
+     * @return string|null The image URL.
      */
-    public function getImageUrl(): string
+    public function getImgUrl(): ?string
     {
         return $this->imgUrl;
     }
 
 
     /**
-     * Set the image URL.
+     * Sets the image URL for the object.
      *
-     * @param string $imgUrl The URL of the image to set.
+     * @param string $imgUrl The URL of the image.
+     * @throws \Exception If the image URL is invalid.
      * @return void
      */
-    public function setImageUrl(string $imgUrl): void
+    public function setImgUrl(string $imgUrl): void
     {
         $this->imgUrl = $imgUrl;
     }
 
 
     /**
-     * Retrieves the image alt attribute.
+     * Retrieves the value of the imgAlt property.
      *
-     * @return string The image alt attribute.
+     * @return string|null The value of the imgAlt property.
      */
-    public function getImageAlt(): string
+    public function getImgAlt(): ?string
     {
         return $this->imgAlt;
     }
@@ -125,57 +156,55 @@ class ArticleEntity
     /**
      * Sets the alt text for an image.
      *
-     * @param string $imgAlt The alt text to be set for the image.
-     * @throws Some_Exception_Class A description of the exception that may be thrown.
+     * @param string $imgAlt The alt text to set.
+     * @throws \Exception If an error occurs.
      * @return void
      */
-    public function setImageAlt(string $imgAlt): void
+    public function setImgAlt(string $imgAlt): void
     {
         $this->imgAlt = $imgAlt;
     }
 
 
     /**
-     * Returns the creation date of the object.
+     * Retrieves the createdAt value of the object.
      *
-     * @return \DateTime The creation date of the object.
+     * @return \DateTimeInterface|null The createdAt value or null if not set.
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
 
     /**
-     * Sets the created date and time of the object.
+     * Set the creation date and time of the object.
      *
-     * @param \DateTime $createdAt The created date and time.
-     * @throws \Some_Exception_Class Description of exception.
-     * @return void
+     * @param \DateTimeInterface $createdAt The creation date and time.
      */
-    public function setCreatedAt(\DateTime $createdAt): void
+    public function setCreatedAt(\DateTimeInterface $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
 
     /**
-     * Returns the updated date and time of the object.
+     * Retrieves the value of the updatedAt property.
      *
-     * @return \DateTime The updated date and time.
+     * @return \DateTimeInterface|null The updatedAt property value.
      */
-    public function getUpdatedAt(): \DateTime
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
 
     /**
-     * Set the updated at date and time.
+     * Sets the "updatedAt" property of the object.
      *
-     * @param \DateTime $updatedAt The updated at date and time.
+     * @param \DateTimeInterface $updatedAt The updated date and time.
      */
-    public function setUpdatedAt(\DateTime $updatedAt): void
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }

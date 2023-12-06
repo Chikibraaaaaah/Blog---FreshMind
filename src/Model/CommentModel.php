@@ -6,10 +6,11 @@ use App\Model\Factory\ModelFactory;
 
 class CommentModel extends MainModel
 {
+    private int $id;
 
-    private string $authorId;
+    private int $authorId;
 
-    private string $articleId;
+    private int $articleId;
 
     private string $content;
 
@@ -18,6 +19,7 @@ class CommentModel extends MainModel
     private DateTime $createdAt;
 
     private DateTime $updatedAt;
+    
 
     public function readComment(string $value, string $key=null)
     {

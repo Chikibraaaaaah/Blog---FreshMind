@@ -1,54 +1,76 @@
 <?php
 
-namespace App\Model\Entity;
+namespace App\Entity;
 
-class CommentEntity extends MainModel
+use Doctrine\ORM\Mapping as ORM;
+
+
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="blog_comment")
+ */
+class CommentEntity
 {
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue(strategy="AUTO")
+     * @ORM\Column(type="integer", name="id")
+     */
+    private $id;
 
-    private int $id;
+    /**
+     * @ORM\Column(type="integer", name="authorId")
+     * @ORM\ManyToOne(targetEntity="UserEntity", mappedBy="id")
+     * @ORM\JoinColumn(name="authorId", referencedColumnName="id")
+     */
+    private $authorId;
 
-    private int $authorId;
+    /**
+     * @ORM\Column(type="integer", name="articleId")
+     * @ORM\ManyToOne(targetEntity="ArticleEntity", inversedBy="id")
+     * @ORM\JoinColumn(name="articleId", referencedColumnName="id")
+     */
+    private $articleId;
 
-    private int $articleId;
+    /**
+     * @ORM\Column(type="text", name="content")
+     */
+    private $content;
 
-    private string $content;
+    /**
+     * @ORM\Column(type="string", name="approved")
+     */
+    private $approved;
 
-    private bool $approuved;
+    /**
+     * @ORM\Column(type="datetime", name="createdAt")
+     */
+    private $createdAt;
 
-    private DateTime $createdAt;
+    /**
+     * @ORM\Column(type="datetime", name="updatedAt")
+     */
+    private $updatedAt;
 
-    private DateTime $updatedAt;
-
-
+    // Getters et setters pour chaque propriété...
 
     /**
      * Retrieves the ID of the object.
      *
-     * @return int The ID of the object.
+     * @return int|null The ID of the object, or null if it does not have an ID.
      */
-    public function getId(): int {
+    public function getId(): ?int
+    {
         return $this->id;
-    }
-    
-
-    /**
-     * Sets the ID of the object.
-     *
-     * @param int $id The ID to set.
-     *
-     * @return void
-     */
-    public function setId(int $id): void {
-        $this->id = $id;
     }
 
 
     /**
      * Retrieves the author ID.
      *
-     * @return int The author ID.
+     * @return int|null The author ID.
      */
-    public function getAuthorId(): int
+    public function getAuthorId(): ?int
     {
         return $this->authorId;
     }
@@ -58,7 +80,6 @@ class CommentEntity extends MainModel
      * Sets the author ID.
      *
      * @param int $authorId The ID of the author.
-     * @throws Some_Exception_Class The exception that can be thrown.
      * @return void
      */
     public function setAuthorId(int $authorId): void
@@ -70,9 +91,9 @@ class CommentEntity extends MainModel
     /**
      * Retrieves the article ID.
      *
-     * @return int The article ID.
+     * @return int|null The article ID, or null if not set.
      */
-    public function getArticleId(): int
+    public function getArticleId(): ?int
     {
         return $this->articleId;
     }
@@ -82,7 +103,7 @@ class CommentEntity extends MainModel
      * Sets the article ID.
      *
      * @param int $articleId The ID of the article.
-     * @throws Some_Exception_Class Description of exception
+     * @throws Some_Exception_Class Description of the exception.
      * @return void
      */
     public function setArticleId(int $articleId): void
@@ -92,11 +113,11 @@ class CommentEntity extends MainModel
 
 
     /**
-     * Retrieves the content of the object.
+     * Get the content.
      *
-     * @return string The content of the object.
+     * @return string|null The content.
      */
-    public function getContent(): string
+    public function getContent(): ?string
     {
         return $this->content;
     }
@@ -106,7 +127,6 @@ class CommentEntity extends MainModel
      * Sets the content of the object.
      *
      * @param string $content The content to set.
-     * @throws \Exception
      * @return void
      */
     public function setContent(string $content): void
@@ -116,72 +136,71 @@ class CommentEntity extends MainModel
 
 
     /**
-     * Retrieves the value of the "approuved" property.
+     * Retrieves the approved value.
      *
-     * @return bool The value of the "approuved" property.
+     * @return string|null The approved value.
      */
-    public function getApprouved(): bool
+    public function getApproved(): ?string
     {
-        return $this->approuved;
+        return $this->approved;
     }
 
 
     /**
-     * Sets the value of the "approuved" property.
+     * Sets the value of the "approved" property.
      *
-     * @param bool $approuved The new value for the "approuved" property.
-     * @throws Some_Exception_Class Description of exception
-     * @return bool
+     * @param string $approved The new value for the "approved" property.
+     * @throws \Exception If the provided value is not of type string.
+     * @return void
      */
-    public function setApprouved(bool $approuved): bool
+    public function setApproved(string $approved): void
     {
-        $this->approuved = $approuved;
+        $this->approved = $approved;
     }
 
 
     /**
-     * Retrieves the creation date of the object.
+     * Retrieves the value of the `createdAt` property.
      *
-     * @return DateTime The creation date of the object.
+     * @return \DateTimeInterface|null The value of the `createdAt` property.
      */
-    public function getCreatedAt(): DateTime
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
 
 
     /**
-     * Sets the created at date and time.
+     * Sets the value of the createdAt property.
      *
-     * @param DateTime $createdAt The date and time to set as the created at value.
+     * @param \DateTimeInterface $createdAt The new value for the createdAt property.
      * @return void
      */
-    public function setCreatedAt(DateTime $createdAt): void
+    public function setCreatedAt(\DateTimeInterface $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
 
 
     /**
-     * Retrieves the updated date and time of the object.
+     * Retrieves the value of the 'updatedAt' property.
      *
-     * @return DateTime The updated date and time.
+     * @return \DateTimeInterface|null The value of the 'updatedAt' property.
      */
-    public function getUpdatedAt(): DateTime
+    public function getUpdatedAt(): ?\DateTimeInterface
     {
         return $this->updatedAt;
     }
 
+
     /**
-     * Sets the value of the $updatedAt property.
+     * Set the updated at date and time.
      *
-     * @param DateTime $updatedAt The new value for the $updatedAt property.
-     * @return void
+     * @param \DateTimeInterface $updatedAt The updated at date and time.
      */
-    public function setUpdatedAt(DateTime $updatedAt): void
+    public function setUpdatedAt(\DateTimeInterface $updatedAt): void
     {
         $this->updatedAt = $updatedAt;
     }
-
 
 }
