@@ -147,16 +147,23 @@ abstract class GlobalsController
      */
     protected function getAlert(bool $type=false)
     {
-        if (isset($this->alert) === TRUE) {
-            if ($type === TRUE) {
-                return $this->alert["type"] ?? "";
-            }
+        // if (isset($this->alert) === TRUE) {
+        //     if ($type === TRUE) {
+        //         return $this->alert["type"] ?? "";
+        //     }
 
-            echo filter_var($this->alert["message"]);
+        //     echo filter_var($this->alert["message"]);
 
-            unset($_SESSION["alert"]);
-        }
+        //     unset($_SESSION["alert"]);
+        // }
+
+        $this->alert = $this->getSession()["alert"];
+        unset($_SESSION["alert"]);
+
+        return  $this->alert;
     }
+
+
 
 
     /**

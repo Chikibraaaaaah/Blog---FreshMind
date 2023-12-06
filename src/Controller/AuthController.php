@@ -25,8 +25,11 @@ class AuthController extends MainController
      */
     public function defaultMethod()
     {
-        $this->redirect("auth_register");
+        $this->alert = $this->getAlert() ?? [];
+        
+        $this->redirect("auth_register", ["alert" => $this->alert]);
     }
+
 
 
     /**
@@ -36,7 +39,7 @@ class AuthController extends MainController
      */
     public function createAccountMethod()
     {
-        $this->alert = $this->getAlert() ?? [];
+        $this->alert = $this->getAlert(true) ?? [];
 
         return $this->twig->render("auth/createAccount.twig", ["alert" => $this->alert]);
     }
@@ -49,7 +52,7 @@ class AuthController extends MainController
      */
     public function registerMethod()
     {
-        $this->alert = $this->getAlert() ?? [];
+        $this->alert = $this->getAlert(true) ?? [];
 
         return $this->twig->render("auth/register.twig", ["alert" => $this->alert]);
     }
@@ -68,7 +71,16 @@ class AuthController extends MainController
 
     public function loginMethod()
     {
+        if($this->checkInputs() === FALSE) {
+            $this->setSession([
+                "alert"     => "danger",
+                "message"   => "Veuillez remplir tous les champs."
+            ]);
+            $this->redirect("auth_createAccount");
+        };
+
         $this->user = $this->checkByEmail();
+
 
         if(count($this->user) > 0) {
             if (password_verify($this->getPost("password"), $this->user["password"]) === TRUE) {
@@ -170,14 +182,14 @@ class AuthController extends MainController
 {
 
     if ($this->checkInputs() === FALSE) {
-        $this->alert =  $this->getAlert ?? [];
+        $this->setSession([
+            "alert"     => "danger",
+            "message"   => "Veuillez remplir tous les champs."
+        ]);
         $this->redirect("auth_createAccount");
     }
 
     $userFound = $this->checkByEmail();
-
-    // var_dump($userFound);
-    // die();
 
     if ($userFound) {
         $this->setSession([

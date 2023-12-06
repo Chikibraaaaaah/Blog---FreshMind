@@ -1,22 +1,19 @@
 {% extends "layout/layout.twig" %}
 
 {% block auth %}
-  <h1>Hello</h1>
-    {% if alert %}
-
-      <p>simpple alert</p>
-      <p>{{alert}}</p>
-    
-      <div class="alert alert-{{ alert.alert }} alert-dismissible fade show" role="alert">
-        {{ alert.message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-  
-    {% endif %}
 
   <div class="container container-fluid">
     <div class="row mt-5">
       <h2 class="text-center">Inscrivez-vous</h2>
+        {% if alert %}
+    
+          <div class="alert alert-{{ alert.alert }} alert-dismissible fade show" role="alert">
+            {{ alert.message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+      
+        {% endif %}
+
       <form action="index.php?access=auth_signup" method = "POST">
 
       <!-- UserName input -->
@@ -24,7 +21,7 @@
           <input type="text" id="userName" class="form-control" name="userName"/>
           <label class="form-label" for="userName">Nom d'utilisateur</label>
         </div>
-    
+        
         <!-- Email input -->
         <div class="form-outline mb-4 z-2">
           <input type="email" id="email" class="form-control" name="email"/>
