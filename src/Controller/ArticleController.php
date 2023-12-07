@@ -56,6 +56,7 @@ class ArticleController extends MainController
     {
         $this->article["imgUrl"]    = new ServiceController();
         $this->article              = [
+                                        "authorId"  => $this->getSession()["user"]["id"],
                                         "title"     => $this->encodeString($this->getPost("title")),
                                         "content"   => $this->encodeString($this->getPost("content")),
                                         "imgUrl"    => $this->article["imgUrl"]->uploadFile(),

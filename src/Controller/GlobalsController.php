@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Model\Factory\ModelFactory;
+use Dotenv\Dotenv;
 use Twig\Error\LoaderError;
 use RuntimeException;
 
@@ -36,6 +37,21 @@ abstract class GlobalsController
     /**
      * @var array
      */
+    private $env = [];
+
+    /**
+     * @var array
+     */
+    private $dotenv = [];
+
+    /**
+     * @var array
+     */
+    private $dossierParent = [];
+
+    /**
+     * @var array
+     */
     private $post = [];
 
     /**
@@ -56,10 +72,14 @@ abstract class GlobalsController
     public function __construct()
     {
 
-        $this->get      = filter_input_array(INPUT_GET) ?? [];
-        $this->post     = filter_input_array(INPUT_POST) ?? [];
-        $this->files    = filter_var_array($_FILES) ?? [];
-
+        $this->get              = filter_input_array(INPUT_GET) ?? [];
+        $this->post             = filter_input_array(INPUT_POST) ?? [];
+        $this->files            = filter_var_array($_FILES) ?? [];
+        $this->dossierParent    = dirname(dirname(__DIR__));
+        $this->dotenv           = dotenv::createImmutable($this->dossierParent);
+        $this->dotenv           = $this->dotenv->load();
+        $this->env              = filter_var_array($_ENV) ?? [];
+        
         if (isset($this->files["file"]) === TRUE) {
             $this->file = $this->files["file"];
         }
@@ -74,6 +94,7 @@ abstract class GlobalsController
         if (isset($this->session["user"]) === TRUE) {
             $this->user = $this->session["user"];
         }
+
 
     }
 
@@ -164,8 +185,6 @@ abstract class GlobalsController
     }
 
 
-
-
     /**
      * Get Files Array, File Array or File Var
      * @param null|string $var
@@ -235,6 +254,24 @@ abstract class GlobalsController
         }
 
         return $this->user[$var] ??"";
+    }
+
+
+
+    /**
+     * Retrieves the specified environment variable value or the entire environment array if no variable is specified.
+     *
+     * @param string $var (optional) The name of the environment variable to retrieve. Defaults to null.
+     * @return mixed The value of the specified environment variable, or an empty string if the variable does not exist.
+     */
+    protected function getEnv(string $var = null)
+    {
+        if ($var === null) {
+
+            return $this->env;
+        }
+        
+        return $this->env[$var] ?? "";
     }
 
 

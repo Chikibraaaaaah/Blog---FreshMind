@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Model\Factory\ModelFactory;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
+use Symfony\Component\Mime\Address;
+use App\Service\MyMailer;
+
 
 class UserController extends MainController
 {
@@ -144,7 +147,7 @@ class UserController extends MainController
         $mail = $this->sendMailMethod($this->email["subject"], $this->email["content"], $this->email["receiver"]);
     }
 
-    public function contactMethod()
+    public function contactMethod(MyMailer $myMailer)
     {
         // $this->form                 = $this->getPost();
         // $this->email["receiver"]    = "tristanriedinger@gmail.com";
@@ -157,23 +160,26 @@ class UserController extends MainController
         
     }
 
-    public function sendEmailMethod(MailerInterface $mailer): Response
+    public function sendMailMethod()
     {
-        $email = (new Email())
-            ->from('hello@example.com')
-            ->to('alexisbateaux@gmail.com')
-            //->cc('cc@example.com')
-            //->bcc('bcc@example.com')
-            //->replyTo('fabien@example.com')
-            //->priority(Email::PRIORITY_HIGH)
-            ->subject('Time for Symfony Mailer!')
-            ->text('Sending emails is fun again!')
-            ->html('<p>See Twig integration for better HTML integration!</p>');
+        $mailer = new MailerInterface();
 
-        $mailer->send($email);
-      
+        $mail = (new TemplatedEmail())
+        ->from(new Address('expediteur@demo.test', 'Mon nom'))
+        ->to('destinataire@demo.test')
+        ->subject('Mon beau sujet')
+        ->htmlTemplate('mails/test.twig')
+        ->context([
+           'firstname' => 'Joe'
+        ])
+     ;
+
+  
+     
+     $mailer->send($mail);
     }
-
+    // var_dump($mail);
+    // die();
 
 
     public function getActivity()

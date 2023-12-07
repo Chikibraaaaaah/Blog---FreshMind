@@ -41,7 +41,7 @@ class ServiceController extends GlobalsController
             $this->destination = sprintf(
                 './img/%s.%s',
                 sha1_file($this->getFiles()['img']['tmp_name']),
-                $ext
+                $this->extension
             );
 
             // You should name it uniquely!
