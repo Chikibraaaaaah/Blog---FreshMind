@@ -160,9 +160,8 @@ class UserController extends MainController
         
     }
 
-    public function sendMailMethod()
+    public function sendMailMethod(MailerInterface $mailer)
     {
-        $mailer = new MailerInterface();
 
         $mail = (new TemplatedEmail())
         ->from(new Address('expediteur@demo.test', 'Mon nom'))
