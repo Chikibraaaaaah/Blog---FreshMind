@@ -76,9 +76,9 @@ abstract class GlobalsController
         $this->post             = filter_input_array(INPUT_POST) ?? [];
         $this->files            = filter_var_array($_FILES) ?? [];
         $this->dossierParent    = dirname(dirname(__DIR__));
-        $this->dotenv           = dotenv::createImmutable($this->dossierParent);
-        $this->dotenv           = $this->dotenv->load();
-        $this->env              = filter_var_array($_ENV) ?? [];
+        $this->dotenv           = Dotenv::createImmutable($this->dossierParent);
+        $this->env              = array_merge(filter_input_array(INPUT_ENV), $this->dotenv->load());
+        
         
         if (isset($this->files["file"]) === TRUE) {
             $this->file = $this->files["file"];

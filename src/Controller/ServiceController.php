@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
-use App\Model\Factory\ModelFactory;
-use Twig\Error\LoaderError;
-use RuntimeException;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
+use Symfony\Component\Mailer\Transport\Smtp\Stream\SocketStream;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Address;
+
 
 class ServiceController extends GlobalsController
 {
@@ -14,6 +17,7 @@ class ServiceController extends GlobalsController
     private $MIME;
 
     private $destination;
+
 
     public function defaultMethod()
     {
@@ -111,5 +115,27 @@ class ServiceController extends GlobalsController
             "message"   => "Veuillez choisir un fichier."
         ]);
     }
+
+    public function sendEmail(MailerInterface $mailer): Response
+    {
+// Configurez le transport SMTP
+    $transport = new EsmtpTransport('smtp.gmail.com', 587);
+    $transport->setStreamOptions([
+        'ssl' => [
+            'verify_peer' => false,
+            'verify_peer_name' => false,
+            'allow_self_signed' => true,
+        ],
+    ]);
+
+    // Configurez les informations d'identification SMTP (facultatif si le serveur SMTP ne nécessite pas d'authentification)
+    $transport->setUsername('alexisbateaux');
+    $transport->setPassword('k/!)pk098UFD@&r');
+
+    // Créez une instance de Mailer en utilisant le transport SMTP configuré
+    $mailer = new Mailer($transport);
+    }
+
+
 
 }

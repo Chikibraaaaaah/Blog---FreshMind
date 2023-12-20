@@ -6,10 +6,6 @@ use App\Model\Factory\ModelFactory;
 use Symfony\Component\Mime\Email;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
-use Symfony\Component\Mime\Address;
-use App\Service\MyMailer;
 
 
 class UserController extends MainController
@@ -38,6 +34,13 @@ class UserController extends MainController
     private $articlesCommented = [];
 
     private $dotenv;
+
+    private $mailer;
+
+    public function __construct(MailerInterface $mailer)
+    {
+        $this->mailer = $mailer;
+    }
 
 
     public function defaultMethod()
@@ -146,39 +149,6 @@ class UserController extends MainController
 
         $mail = $this->sendMailMethod($this->email["subject"], $this->email["content"], $this->email["receiver"]);
     }
-
-    public function contactMethod(MyMailer $myMailer)
-    {
-        // $this->form                 = $this->getPost();
-        // $this->email["receiver"]    = "tristanriedinger@gmail.com";
-        // $this->email["subject"]     = $this->form["precision"];
-        // $this->email["content"]     = $this->form["demande"];
-
-        // $this->sendMailMethod();
-
-
-        
-    }
-
-    public function sendMailMethod(MailerInterface $mailer)
-    {
-
-        $mail = (new TemplatedEmail())
-        ->from(new Address('expediteur@demo.test', 'Mon nom'))
-        ->to('destinataire@demo.test')
-        ->subject('Mon beau sujet')
-        ->htmlTemplate('mails/test.twig')
-        ->context([
-           'firstname' => 'Joe'
-        ])
-     ;
-
-  
-     
-     $mailer->send($mail);
-    }
-    // var_dump($mail);
-    // die();
 
 
     public function getActivity()
