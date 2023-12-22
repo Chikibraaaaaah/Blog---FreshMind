@@ -1,57 +1,49 @@
 <?php
 
-// src/Controller/MailerController.php
 namespace App\Controller;
 
-use Dotenv\Dotenv;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mailer\Transport;
+use App\Controller\MainController;
+use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 class MailerController extends MainController
 {
-
-    private $mailer;
-
-
-    public function __construct()
+    // #[Route('/email')]
+    public function sendEmailMethod()
     {
- 
+   
+        // Create a Transport object
+        $transport = Transport::fromDsn($this->getEnv("MAILER_DSN"));
+         
+        // Create a Mailer object
+        $mailer = new Mailer($transport); 
+         
+        // Create an Email object
+        $email = (new Email());
+         
+        // Set the "From address"
+        $email->from('alexisbateaux@gmail.com');
+         
+        // Set the "From address"
+        $email->to('tristanriedinger@gmail.com');
+         
+        // Set a "subject"
+        $email->subject('Demo message using the Symfony Mailer library.');
+         
+        // Set the plain-text "Body"
+        $email->text('This is the plain text body of the message.\nThanks,\nAdmin');
+         
+        // Set HTML "Body"
+        $email->html('This is the HTML version of the message.<br>Example of inline image:<br><img src="cid:nature" width="200" height="200"><br>Thanks,<br>Admin');
+         
+        // // Add an "Attachment"
+        // $email->attachFromPath('/path/to/example.txt');
+         
+        // // Add an "Image"
+        // $email->embed(fopen('/path/to/mailor.jpg', 'r'), 'nature');
+         
+        // Send the message
+        $mailer->send($email);
     }
-
-    public function sendEmailMethod(): Response
-    {
-
-        // $email = (new Email())
-        //     ->from('hello@example.com')
-        //     ->to('alexisbateaux@gmail.com')
-        //     //->cc('cc@example.com')
-        //     //->bcc('bcc@example.com')
-        //     //->replyTo('fabien@example.com')
-        //     //->priority(Email::PRIORITY_HIGH)
-        //     ->subject('Time for Symfony Mailer!')
-        //     ->text('Sending emails is fun again!')
-        //     ->html('<p>See Twig integration for better HTML integration!</p>');
-
-        //     // $dsn = "smtp://48615331c95d40:36e5e5e545e4b3@sandbox.smtp.mailtrap.io:2525";
-
-        //     // $transport = Transport::fromDsn($dsn);
-
-
-        // $mailer->send($email);
-
-        // var_dump($this->mailer);
-        // die();
-
-        // echo "<pre>";
-        // var_dump($this->getEnv());
-        // echo "</pre>";
-        // die();
-
-    }
-
-
 }
