@@ -40,9 +40,6 @@ class HomeController extends MainController
         $this->loggedUser   = $this->getSession("user") ?? [];
         $this->alert        = $this->getAlert() ?? [];
 
-        // var_dump($this->getEnv());
-        // die();
-
         return $this->twig->render("home.twig", [
             "articles"      => $this->articles,
             "loggedUser"    => $this->loggedUser,

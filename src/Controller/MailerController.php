@@ -2,41 +2,59 @@
 
 namespace App\Controller;
 
-use Symfony\Component\Mailer\Transport;
 use App\Controller\MainController;
+use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\Transport\Dsn;
+
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class MailerController extends MainController
 {
-    // #[Route('/email')]
-    public function sendEmailMethod()
+
+    private $transport;
+
+    private $mailer;
+
+    private string $receiver;
+
+    private $email;
+
+
+    public function sendEmailMethod($receiver, $subject, $message)
     {
    
         // Create a Transport object
-        $transport = Transport::fromDsn($this->getEnv("MAILER_DSN"));
+        $this->transport = Transport::fromDsn($this->getEnv("MAILER_DSN"));
+
          
         // Create a Mailer object
-        $mailer = new Mailer($transport); 
+        $this->mailer = new Mailer($this->transport); 
          
         // Create an Email object
-        $email = (new Email());
+        $this->email = (new Email());
          
         // Set the "From address"
-        $email->from('alexisbateaux@gmail.com');
+        $this->email->from('alexisbateaux@gmail.com');
          
         // Set the "From address"
-        $email->to('tristanriedinger@gmail.com');
+        $this->email->to($receiver);
+
+        
          
         // Set a "subject"
-        $email->subject('Demo message using the Symfony Mailer library.');
+        $this->email->subject($subject);
          
         // Set the plain-text "Body"
-        $email->text('This is the plain text body of the message.\nThanks,\nAdmin');
+        $this->email->text($message);
          
         // Set HTML "Body"
-        $email->html('This is the HTML version of the message.<br>Example of inline image:<br><img src="cid:nature" width="200" height="200"><br>Thanks,<br>Admin');
+        // $this->email->html('This is the HTML version of the message.<br>Example of inline image:<br><img src="cid:nature" width="200" height="200"><br>Thanks,<br>Admin');
          
+        $this->email->html($this->twig->render("email/welcome.twig"));
         // // Add an "Attachment"
         // $email->attachFromPath('/path/to/example.txt');
          
@@ -44,6 +62,11 @@ class MailerController extends MainController
         // $email->embed(fopen('/path/to/mailor.jpg', 'r'), 'nature');
          
         // Send the message
-        $mailer->send($email);
+        $this->mailer->send($this->email);
+    }
+
+    public function testMethod(){
+        $this->sendEmailMethod("etcacaexisteputin@gmail.com", "Félicitations !", "Votre compte a été approuve. Vous pouvez maintenant vous connecter.");
+        die();
     }
 }

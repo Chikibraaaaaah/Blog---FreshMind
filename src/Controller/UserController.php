@@ -33,15 +33,6 @@ class UserController extends MainController
 
     private $articlesCommented = [];
 
-    private $dotenv;
-
-    private $mailer;
-
-    public function __construct(MailerInterface $mailer)
-    {
-        $this->mailer = $mailer;
-    }
-
 
     public function defaultMethod()
     {
@@ -71,7 +62,7 @@ class UserController extends MainController
         ]);
     }
 
-    private function getUserById()
+    public function getUserById()
     {
         $this->user["id"] = $this->getGet("id");
         $this->user       = ModelFactory::getModel("User")->readData($this->user["id"], "id",["password"]);
@@ -116,6 +107,9 @@ class UserController extends MainController
     public function updateUserMethod()
     {
         $this->user = $this->getUserById();
+
+        var_dump($user);
+        die();
 
         if ($this->checkInputs() === TRUE) {
             $updatedUser = array_merge($this->user, $this->getPost());

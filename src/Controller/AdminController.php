@@ -4,9 +4,13 @@
 namespace App\Controller;
 
 use App\Model\Factory\ModelFactory;
-use Twig\Error\LoaderError;
-use RuntimeException;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mime\Email;
 
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class AdminController extends MainController
 {
@@ -14,6 +18,17 @@ class AdminController extends MainController
     private $commentsToValidate = [];
 
     private $usersToApprouve = [];
+
+    private $mailer;
+
+    private $session;
+
+    public function __construct(){
+
+        parent::__construct();
+        $this->mailer = new MailerController();
+
+    }
 
 
     /**
@@ -65,14 +80,25 @@ class AdminController extends MainController
      */
     public function approuveUserMethod()
     {
-        $id     = $this->getGet("id");
-        $user   = $this->getSession()["user"];
+        $id             = $this->getGet("id");
+        $myAccount      = $this->getSession();
+
+        // var_dump($myAccount);
+        // die();
 
         ModelFactory::getModel("User")->updateData($id, ["approuved" => 1]);
         $this->setSession([
             "alert"     => "success",
             "message"   => "L'utilisateur a bien été approuvé."
         ]);
+
+        
+        // $this->mailer->sendEmailMethod("etcacaexisteputin@gmail.com", "Félicitations !", "Votre compte a été approuve. Vous pouvez maintenant vous connecter.");
+    //     echo "<pre>";
+    //     var_dump($this->mailer);   
+    // echo "</pre>";
+    //     die();
+
         $this->redirect("user_getUser", ["id" => $user["id"]]);
     }
 
