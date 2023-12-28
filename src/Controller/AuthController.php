@@ -3,6 +3,13 @@
 namespace App\Controller;
 
 use App\Model\Factory\ModelFactory;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\Transport\Dsn;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class AuthController extends MainController
 {
@@ -15,6 +22,15 @@ class AuthController extends MainController
     private $loggedUser;
 
     private $secondPassword;
+
+    private $mailer;
+
+    // public function __construct(MailerController $mailer){
+
+    //     parent::__construct();
+    //     $this->mailer = $mailer;
+
+    // }
 
 
     /**
@@ -29,7 +45,6 @@ class AuthController extends MainController
         
         $this->redirect("auth_register", ["alert" => $this->alert]);
     }
-
 
 
     /**
@@ -72,15 +87,10 @@ class AuthController extends MainController
     public function loginMethod()
     {
         if($this->checkInputs() === FALSE) {
-            $this->setSession([
-                "alert"     => "danger",
-                "message"   => "Veuillez remplir tous les champs."
-            ]);
             $this->redirect("auth_createAccount");
         };
 
         $this->user = $this->checkByEmail();
-
 
         if(count($this->user) > 0) {
             if (password_verify($this->getPost("password"), $this->user["password"]) === TRUE) {
@@ -101,7 +111,6 @@ class AuthController extends MainController
 
         $this->redirect("auth_createAccount");
     }
-
 
 
     public function logoutMethod()
@@ -143,7 +152,7 @@ class AuthController extends MainController
 
     private function checkPasswordsCorrespond()
     {
-        $this->user["password"]         = $this->getPost("password");
+        $this->user["password"] = $this->getPost("password");
         $this->secondPassword   = $this->getPost("passwordMatch");
 
         if ($this->user["password"] !== $this->secondPassword) {
@@ -161,7 +170,7 @@ class AuthController extends MainController
     private function checkByUserName()
     {
         $this->user["userName"] = $this->getPost("userName");
-        $this->user     = ModelFactory::getModel("User")->readData($this->user["userName"],"userName");
+        $this->user             = ModelFactory::getModel("User")->readData($this->user["userName"],"userName");
 
         if ($this->user === TRUE) {
             return $this->user;
@@ -170,74 +179,61 @@ class AuthController extends MainController
 
     private function checkByEmail()
     {
-
         $this->user["email"]    = $this->getPost("email");
-        $userFound      = ModelFactory::getModel("User")->readData($this->user["email"],"email");
+        $userFound              = ModelFactory::getModel("User")->readData($this->user["email"],"email");
 
         return $userFound;
-
     }
 
     public function signupMethod()
-{
+    {
+        if ($this->checkInputs() === FALSE) {
+            $this->redirect("auth_createAccount");
+        }
 
-    if ($this->checkInputs() === FALSE) {
+        $userFound = $this->checkByEmail();
+
+        if ($userFound) {
+            $this->setSession([
+                "alert"     => "danger",
+                "message"   => "Cet email est déjà utilisé."
+            ]);
+            $this->redirect("auth_register");
+        }
+
+        $mpChek = $this->checkPasswordsCorrespond();
+
+        if ($mpChek === FALSE) {
+            $this->redirect("auth_createAccount");
+        }
+
+        $this->mailer = new MailerController();
+        $this->mailer->sendEmailMethod("tristanriedinger@gmail.com","yo","tame","email/contact.twig");
+        
+        $this->user = $this->createUser();
+
+        $this->setSession($this->user, true);
         $this->setSession([
-            "alert"     => "danger",
-            "message"   => "Veuillez remplir tous les champs."
+            "alert" => "success",
+            "message" => "Votre compte a bien été créé."
         ]);
-        $this->redirect("auth_createAccount");
+        $this->redirect("home");
     }
 
-    $userFound = $this->checkByEmail();
+    private function createUser()
+    {
+        $hashedPassword = password_hash($this->getPost("password"), PASSWORD_DEFAULT);
+        $newUser = [
+            "userName"  => $this->getPost("userName"),
+            "email"     => $this->getPost("email"),
+            "imgUrl"    => "https://bootdey.com/img/Content/avatar/avatar7.png",
+            "password"  => $hashedPassword,
+            "createdAt" => date("Y-m-d H:i:s")
+        ];
+        ModelFactory::getModel("User")->createData($newUser);
+        $userCreated = ModelFactory::getModel("User")->readData($newUser["email"], "email");
 
-    if ($userFound) {
-        $this->setSession([
-            "alert"     => "danger",
-            "message"   => "Cet email est déjà utilisé."
-        ]);
-
-        $this->redirect("auth_register");
+        return $userCreated;
     }
-
-    $mpChek = $this->checkPasswordsCorrespond();
-
-    if ($mpChek === FALSE) {
-        $this->setSession([
-            "alert"     => "danger",
-            "message"   => "Les mots de passe ne correspondent pas."
-        ]);
-        $this->redirect("auth_createAccount");
-    }
-
-    $user = $this->createUser();
-
-    $this->setSession($user, true);
-    $this->setSession([
-        "alert" => "success",
-        "message" => "Votre compte a bien été créé."
-    ]);
-    $this->redirect("home");
-}
-
-private function createUser()
-{
-
-    $hashedPassword = password_hash($this->getPost("password"), PASSWORD_DEFAULT);
-    $newUser = [
-        "userName"  => $this->getPost("userName"),
-        "email"     => $this->getPost("email"),
-        "imgUrl"    => "https://bootdey.com/img/Content/avatar/avatar7.png",
-        "password"  => $hashedPassword,
-        "createdAt" => date("Y-m-d H:i:s")
-    ];
-    ModelFactory::getModel("User")->createData($newUser);
-    $userCreated = ModelFactory::getModel("User")->readData($newUser["email"], "email");
-
-    return $userCreated;
-
-}
-
-
 
 }

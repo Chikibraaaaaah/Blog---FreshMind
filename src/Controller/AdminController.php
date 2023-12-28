@@ -81,7 +81,7 @@ class AdminController extends MainController
     public function approuveUserMethod()
     {
         $id             = $this->getGet("id");
-        $myAccount      = $this->getSession();
+        $myAccount      = $this->getSession()["user"];
 
         // var_dump($myAccount);
         // die();
@@ -99,7 +99,7 @@ class AdminController extends MainController
     // echo "</pre>";
     //     die();
 
-        $this->redirect("user_getUser", ["id" => $user["id"]]);
+        $this->redirect("user_getUser", ["id" => $myAccount["id"]]);
     }
 
 }
