@@ -67,6 +67,12 @@ class AuthController extends MainController
         return $this->twig->render("auth/register.twig", ["alert" => $this->alert]);
     }
 
+
+    /**
+     * Reset the user's password.
+     *
+     * @return mixed The rendered Twig template.
+     */    
     public function resetPasswordMethod()
     {
         $this->alert =  $this->getAlert() ?? [];
@@ -74,6 +80,13 @@ class AuthController extends MainController
         return $this->twig->render("auth/resetPassword.twig", ["alert" => $this->alert]);
     }
 
+
+
+    /**
+     * Prevents the delete method from being executed.
+     *
+     * @return mixed
+     */
     public function preventDeleteMethod()
     {
         $this->loggedUser = $this->getSession("user");
@@ -84,6 +97,11 @@ class AuthController extends MainController
 
     /**                             Check methods                          */
 
+    /**
+     * Check if the passwords provided by the user match.
+     *
+     * @return bool Returns true if the passwords match, false otherwise.
+     */
     private function checkPasswordsCorrespond()
     {
         $this->user["password"] = $this->getPost("password");
@@ -101,6 +119,13 @@ class AuthController extends MainController
     }
 
 
+
+    /**
+     * Check user by username.
+     *
+     * @throws Some_Exception_Class description of exception
+     * @return Some_Return_Value
+     */    
     private function checkByUserName()
     {
         $this->user["userName"] = $this->getPost("userName");
@@ -111,6 +136,13 @@ class AuthController extends MainController
         }
     }
 
+
+        
+    /**
+     * Check user by email.
+     *
+     * @return bool Returns true if the user is found, false otherwise.
+     */
     private function checkByEmail()
     {
         $this->user["email"]    = $this->getPost("email");
@@ -120,7 +152,13 @@ class AuthController extends MainController
     }
 
     /**                                 Set methods                             */
-
+    
+    
+    /**
+     * Performs the login operation.
+     *
+     * @return void
+     */
     public function loginMethod()
     {
         if($this->checkInputs() === FALSE) {
@@ -150,6 +188,11 @@ class AuthController extends MainController
     }
 
 
+    /**
+     * Logout the user and destroy the global session.
+     *
+     * @throws Some_Exception_Class if an error occurs during logout
+     */
     public function logoutMethod()
     {
         $this->destroyGlobal();
@@ -180,6 +223,11 @@ class AuthController extends MainController
     }
 
 
+    /**
+     * Signup method that handles the registration process.
+     *
+     * @throws Some_Exception_Class Exception thrown if there is an error in the registration process.
+     */
     public function signupMethod()
     {
         if ($this->checkInputs() === FALSE) {
@@ -212,6 +260,12 @@ class AuthController extends MainController
         $this->redirect("home");
     }
 
+
+    /**
+     * Creates a new user.
+     *
+     * @return mixed The created user.
+     */
     public function createUser()
     {
         $hashedPassword = password_hash($this->getPost("password"), PASSWORD_DEFAULT);
@@ -228,6 +282,13 @@ class AuthController extends MainController
         return $userCreated;
     }
 
+
+    /**
+     * Generates a new password.
+     *
+     * @param int $length The length of the password (default: 18)
+     * @return string The generated password
+     */
     public function generateNewPassWordMethod($length = 18){
 
         $bytes = random_bytes($length);

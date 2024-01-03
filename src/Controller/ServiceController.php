@@ -2,6 +2,11 @@
 
 namespace App\Controller;
 
+use RuntimeException;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
+
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
@@ -115,62 +120,5 @@ class ServiceController extends GlobalsController
             "message"   => "Veuillez choisir un fichier."
         ]);
     }
-
-    public function sendEmail(MailerInterface $mailer): Response
-    {
-// Configurez le transport SMTP
-    $transport = new EsmtpTransport('smtp.gmail.com', 587);
-    $transport->setStreamOptions([
-        'ssl' => [
-            'verify_peer' => false,
-            'verify_peer_name' => false,
-            'allow_self_signed' => true,
-        ],
-    ]);
-
-    // Configurez les informations d'identification SMTP (facultatif si le serveur SMTP ne nécessite pas d'authentification)
-    $transport->setUsername('alexisbateaux');
-    $transport->setPassword('k/!)pk098UFD@&r');
-
-    // Créez une instance de Mailer en utilisant le transport SMTP configuré
-    $mailer = new Mailer($transport);
-    }
-
-    public function getMailer($mail)
-    {
-        // Create a Transport object
-       $transport = Transport::fromDsn($this->getEnv("MAILER_DSN"));
-
-          
-          // Create a Mailer object
-        $mailer = new Mailer($transport); 
-
-        // Create an Email object
-       $message = (new Email());
-       
-       // Set the "From address"
-       $message->from($this->getEnv("MAILER_FROM"));
-
-       // Set the "From address"
-       $message->to($mail->email);
-       
-       // Set a "subject"
-       $message->subject($mail->subject);
-       
-       // Set the plain-text "Body"
-       $message->text($mail->content);
-
-    //    $email->html($this->twig->render($this->template, ["form" => $form]));
-
-    var_dump($message);
-    die();
-
-       
-       // Send the message
-       $mailer->send($message);
-
-    }
-
-
 
 }

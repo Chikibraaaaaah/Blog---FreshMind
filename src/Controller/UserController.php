@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use RuntimeException;
 use App\Model\Factory\ModelFactory;
 use Symfony\Component\Mime\Email;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -48,7 +49,7 @@ class UserController extends MainController
         $this->comments             = $this->getActivity()["comments"];
         $this->articlesCommented    = $this->getActivity()["articles"];
 
-        return $this->twig->render("user/userProfile.twig", [
+        return $this->twig->render("user/Profile.twig", [
             "user"                  => $this->user,
             "alert"                 => $this->alert,
             "loggedUser"            => $this->loggedUser,
@@ -70,26 +71,13 @@ class UserController extends MainController
 
     public function updatePictureMethod()
     {
-        if ($this->getFIles()["img"]["size"] == 0){
-            $this->setSession([
-                "alert"     => "error",
-                "message"   => "Veuillez sélecitonner une image."
-            ]);
-            $this->redirect("user_get", ["id" => $this->user["id"]]);
-        }
 
-        $fileInput              = new ServiceController();
-        $this->user             = $this->getUserById();
-        $this->user["imgUrl"]   = $fileInput->updatePicture();;
+        $service = new ServiceController();
+        $destination = $service->uploadFile();  
+        $user = $this->getSession("user");
+        ModelFactory::getModel("User")->updateData($user["id"], array_merge($user, ["imgUrl" => $destination]));
 
-        ModelFactory::getModel("User")->updateData((int) $this->user["id"], $this->user);
-     
-        $this->setSession([
-            "alert"     => "success",
-            "message"   => "Votre photo de profil a bien été mise à jour."
-        ]);
-
-        $this->redirect("user_get", ["id" => $this->user["id"]]);
+        $this->redirect("user_getUser", ["id" => $user["id"]]);
     }
 
     public function editUserProfileMethod()
@@ -106,14 +94,11 @@ class UserController extends MainController
     {
         $this->user = $this->getUserById();
 
-        var_dump($user);
-        die();
-
         if ($this->checkInputs() === TRUE) {
             $updatedUser = array_merge($this->user, $this->getPost());
             ModelFactory::getModel("User")->updateData((int) $updatedUser["id"], $updatedUser);
 
-            $this->redirect("user_get", ["id" => $updatedUser["id"]]);
+            $this->redirect("user_getUser", ["id" => $updatedUser["id"]]);
         }
     }
 
