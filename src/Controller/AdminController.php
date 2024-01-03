@@ -23,13 +23,6 @@ class AdminController extends MainController
 
     private $session;
 
-    public function __construct(){
-
-        parent::__construct();
-        $this->mailer = new MailerController();
-
-    }
-
 
     /**
      * Retrieves the unapproved comments from the database.
@@ -83,21 +76,11 @@ class AdminController extends MainController
         $id             = $this->getGet("id");
         $myAccount      = $this->getSession()["user"];
 
-        // var_dump($myAccount);
-        // die();
-
         ModelFactory::getModel("User")->updateData($id, ["approuved" => 1]);
         $this->setSession([
             "alert"     => "success",
             "message"   => "L'utilisateur a bien été approuvé."
         ]);
-
-        
-        // $this->mailer->sendEmailMethod("etcacaexisteputin@gmail.com", "Félicitations !", "Votre compte a été approuve. Vous pouvez maintenant vous connecter.");
-    //     echo "<pre>";
-    //     var_dump($this->mailer);   
-    // echo "</pre>";
-    //     die();
 
         $this->redirect("user_getUser", ["id" => $myAccount["id"]]);
     }

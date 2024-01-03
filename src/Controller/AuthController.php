@@ -206,9 +206,6 @@ class AuthController extends MainController
         if ($mpChek === FALSE) {
             $this->redirect("auth_createAccount");
         }
-
-        $this->mailer = new MailerController();
-        $this->mailer->sendEmailMethod("tristanriedinger@gmail.com","yo","tame","email/contact.twig");
         
         $this->user = $this->createUser();
 
@@ -220,7 +217,7 @@ class AuthController extends MainController
         $this->redirect("home");
     }
 
-    private function createUser()
+    public function createUser()
     {
         $hashedPassword = password_hash($this->getPost("password"), PASSWORD_DEFAULT);
         $newUser = [
@@ -235,5 +232,10 @@ class AuthController extends MainController
 
         return $userCreated;
     }
+
+
+
+    
+   
 
 }

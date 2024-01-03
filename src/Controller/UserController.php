@@ -134,21 +134,12 @@ class UserController extends MainController
         return $this->user;
     }
 
-    public function passwordForgetMethod()
-    {
-        $this->user                 = $this->getByEmail();
-        $this->email["receiver"]    = $this->user["email"];
-        $this->email["subject"]     = "Réinitialisez votre mot de passe";
-        $this->email["content"]     = "Bonjour " . $this->user["userName"] . ",\n\nVous avez demandé de réinitialisez votre mot de passe.\nPour cela, veuillez cliquer sur le lien suivant : http://localhost:8888/Blog/BlogFinal/public/index.php?access=auth_resetPassword\nBisous carresse";
-
-        $mail = $this->sendMailMethod($this->email["subject"], $this->email["content"], $this->email["receiver"]);
-    }
-
 
     public function getActivity()
     {
         $comments           = ModelFactory::getModel("Comment")->listComment($this->getGet("id"), "comment.authorId");
         $uniqueArticleIds   = array_unique(array_column($comments, 'articleId'));
+
         return ["comments"  => $comments, "articles" => $uniqueArticleIds];
     }
 

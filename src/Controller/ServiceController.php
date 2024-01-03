@@ -3,11 +3,11 @@
 namespace App\Controller;
 
 use Symfony\Component\Mailer\Mailer;
-use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
-use Symfony\Component\Mailer\Transport\Smtp\Stream\SocketStream;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Mailer\Transport\Dsn;
 
+// Regrouper création transport et mailer
 
 class ServiceController extends GlobalsController
 {
@@ -134,6 +134,41 @@ class ServiceController extends GlobalsController
 
     // Créez une instance de Mailer en utilisant le transport SMTP configuré
     $mailer = new Mailer($transport);
+    }
+
+    public function getMailer($mail)
+    {
+        // Create a Transport object
+       $transport = Transport::fromDsn($this->getEnv("MAILER_DSN"));
+
+          
+          // Create a Mailer object
+        $mailer = new Mailer($transport); 
+
+        // Create an Email object
+       $message = (new Email());
+       
+       // Set the "From address"
+       $message->from($this->getEnv("MAILER_FROM"));
+
+       // Set the "From address"
+       $message->to($mail->email);
+       
+       // Set a "subject"
+       $message->subject($mail->subject);
+       
+       // Set the plain-text "Body"
+       $message->text($mail->content);
+
+    //    $email->html($this->twig->render($this->template, ["form" => $form]));
+
+    var_dump($message);
+    die();
+
+       
+       // Send the message
+       $mailer->send($message);
+
     }
 
 

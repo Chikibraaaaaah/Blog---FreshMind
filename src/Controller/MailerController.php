@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use App\Controller\MainController;
+use App\Model\Factory\ModelFactory;
+
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
@@ -15,13 +16,11 @@ use Twig\Error\SyntaxError;
 class MailerController extends MainController
 {
 
-
     private $transport;
 
     private $mailer;
 
     private $email;
-
 
 
     /**
@@ -38,6 +37,9 @@ class MailerController extends MainController
    {
        // Create a Transport object
        $this->transport = Transport::fromDsn($this->getEnv("MAILER_DSN"));
+
+    //    var_dump($this->getEnv());
+    //    die();
        
        // Create a Mailer object
        $this->mailer = new Mailer($this->transport); 
@@ -51,7 +53,7 @@ class MailerController extends MainController
        // Set the "From address"
        $this->email->from('alexisbateaux@gmail.com');
        
-       // Set the "From address"
+       // Set the "to address"
        $this->email->to($receiver);
        
        // Set a "subject"
@@ -101,5 +103,44 @@ class MailerController extends MainController
 
        $this->redirect("home");
    }
+
+   // TODO : Fonction pour générer un mot de passe pour l'utilisateur
+
+//    public function resetPasswordMethod(){
+//     $mailer = new MailerController();
+
+//     $user = $this->checkByEmail();
+//     var_dump($user);
+//     die();
+
+//     // shuffle($this->password);
+
+// }
+
+public function passwordForgetMethod(){
+
+    $email = $this->getPost("email");
+    $userFound = ModelFactory::getModel("User")->readData($email, "email");
+
+    if( $userFound === FALSE) {
+        $this->setSession([
+            "alert"     => "danger",
+            "message"   => "Cet email est inconnu de nos services."
+        ]);
+
+        sleep(2);
+        $this->redirect("auth_createAcccount");
+    }
+
+    $this->setSession([
+        "alert"     => "success",
+        "message"   => "Un email de récupération de mot de passe a été envoyé !"
+    ]);
+
+    sleep(2);
+    $this->redirect("auth_register");
+    
+}
+
 
 }
