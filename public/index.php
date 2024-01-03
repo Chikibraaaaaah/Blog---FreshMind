@@ -2,8 +2,8 @@
 
 use Tracy\Debugger;
 
-require __DIR__ . '/../vendor/autoload.php';
 
+require __DIR__ . '/../vendor/autoload.php';
 
 Debugger::enable();
 
@@ -14,3 +14,6 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $router->run();
+
+// var_dump($this->getEnv());
+// die();

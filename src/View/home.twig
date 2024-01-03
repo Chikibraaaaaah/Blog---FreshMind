@@ -10,7 +10,7 @@
             <div class="row">
                 {% block alert %}
                     {% if alert %}
-                            <div class="alert alert-{{ alert.type }} alert-dismissible fade show text-center" role="alert">
+                            <div class="alert alert-{{ alert.alert }} alert-dismissible fade show text-center" role="alert">
                                 {{ alert.message }}
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
@@ -22,7 +22,7 @@
                 {% endblock %}
             </div>
 
-            <button><a href="index.php?access=user_sendMailMethod">Aallez</a></button>
+            <button><a href="index.php?access=admin_generateNewPassWord">Aallez</a></button>
 
             <div class="row d-flex justify-content-center">
                 <h2 class="text-center">Retrouvez toutes mes dernières publications</h2>

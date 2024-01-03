@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Model\Factory\ModelFactory;
+use Dotenv\Dotenv;
 use Twig\Error\LoaderError;
 use RuntimeException;
 
@@ -36,6 +37,21 @@ abstract class GlobalsController
     /**
      * @var array
      */
+    private $env = [];
+
+    /**
+     * @var array
+     */
+    private $dotenv = [];
+
+    /**
+     * @var array
+     */
+    private $dossierParent = [];
+
+    /**
+     * @var array
+     */
     private $post = [];
 
     /**
@@ -56,10 +72,14 @@ abstract class GlobalsController
     public function __construct()
     {
 
-        $this->get      = filter_input_array(INPUT_GET) ?? [];
-        $this->post     = filter_input_array(INPUT_POST) ?? [];
-        $this->files    = filter_var_array($_FILES) ?? [];
-
+        $this->get              = filter_input_array(INPUT_GET) ?? [];
+        $this->post             = filter_input_array(INPUT_POST) ?? [];
+        $this->files            = filter_var_array($_FILES) ?? [];
+        $this->dossierParent    = dirname(dirname(__DIR__));
+        $this->dotenv           = Dotenv::createImmutable($this->dossierParent);
+        $this->env              = array_merge(filter_input_array(INPUT_ENV), $this->dotenv->load());
+        
+        
         if (isset($this->files["file"]) === TRUE) {
             $this->file = $this->files["file"];
         }
@@ -74,6 +94,7 @@ abstract class GlobalsController
         if (isset($this->session["user"]) === TRUE) {
             $this->user = $this->session["user"];
         }
+
 
     }
 
@@ -147,15 +168,20 @@ abstract class GlobalsController
      */
     protected function getAlert(bool $type=false)
     {
-        if (isset($this->alert) === TRUE) {
-            if ($type === TRUE) {
-                return $this->alert["type"] ?? "";
-            }
+        // if (isset($this->alert) === TRUE) {
+        //     if ($type === TRUE) {
+        //         return $this->alert["type"] ?? "";
+        //     }
 
-            echo filter_var($this->alert["message"]);
+        //     echo filter_var($this->alert["message"]);
 
-            unset($_SESSION["alert"]);
-        }
+        //     unset($_SESSION["alert"]);
+        // }
+
+        $this->alert = $this->getSession()["alert"];
+        unset($_SESSION["alert"]);
+
+        return  $this->alert;
     }
 
 
@@ -228,6 +254,24 @@ abstract class GlobalsController
         }
 
         return $this->user[$var] ??"";
+    }
+
+
+
+    /**
+     * Retrieves the specified environment variable value or the entire environment array if no variable is specified.
+     *
+     * @param string $var (optional) The name of the environment variable to retrieve. Defaults to null.
+     * @return mixed The value of the specified environment variable, or an empty string if the variable does not exist.
+     */
+    protected function getEnv(string $var = null)
+    {
+        if ($var === null) {
+
+            return $this->env;
+        }
+        
+        return $this->env[$var] ?? "";
     }
 
 

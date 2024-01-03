@@ -1,0 +1,49 @@
+{% block content %}
+      <div class="row">
+
+        <div class="col-5">
+          <h2 class="text-center mb-4">Utilisateur(s) en attente</h2>
+            {% if unapprouvedUsers|length > 0 %}
+              <ul style="max-height: 200px; overflow:scroll" class="list-group">
+                {% for unapprouvedUser in unapprouvedUsers %}
+                  <li>
+                    <div class="col card d-flex flex-row">
+                        <div class="card-body col-8">
+                          <h5 class="card-title">{{ unapprouvedUser.userName }}</h5>
+                          <p class="card-text">{{ unapprouvedUser.email }}</p>
+                      </div>
+                      <a href="index.php?access=admin_approuveUser&id={{ unapprouvedUser.id }}" class="col-3 m-auto">Valider</a>
+                      <a href="index.php?access=admin_" class="col-3 m-auto">Refuser</a>
+                    </div>
+                  </li>
+                {% endfor %}
+              </ul>
+              {% else %}
+                <p>Aucun utilisateur en attente.</p>
+            {% endif %}
+          </div>
+
+          <div class="col-7">
+            <h2 class="text-center mb-4">Commentaire(s) à valider</h2>
+            {% if unapprouvedComments|length > 0 %}
+
+              <ul style="max-height: 200px; overflow:scroll" class="list-group">
+                  {% for unapprouvedComment in unapprouvedComments %}
+                    <li style="">
+                      <div class="card d-flex flex-row overflow-clip">
+                        <div class="card-body col-8">
+                          <h5 class="card-title">{{ unapprouvedComment.userName }}</h5>
+                          <p class="card-text">{{ unapprouvedComment.content }}</p>
+                        </div>
+                        <a href="index.php?access=admin_approuveComment&id={{ unapprouvedComment.id }}" class="col-3 m-auto">Valider</a>
+                        <a href="index.php?access=admin_" class="col-3 m-auto">Refuser</a>
+                      </div>
+                    </li>
+                  {% endfor %}
+              </ul>
+              {% else %}
+                <p class="text-center ">Aucun commentaire en attente.</p>
+          </div>
+        {% endif %}
+      </div>
+{% endblock %}

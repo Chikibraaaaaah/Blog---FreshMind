@@ -1,0 +1,27 @@
+{% block email %}
+
+    {% block body %}
+        <p>Salut Gros Tas</p>
+
+        <p>T'as reçu une nouvelle demande depuis ton blog tout pourri, check this out biatch !</p>
+
+        <p>Bisous caresses</p>
+        
+        <p> {{ params.demande }} </p> <br>
+        
+        
+        La demande a été transmise par {{ params.prenom }} {{ params.nom }} : {{ params.email }}</p>
+
+    {% endblock %}
+
+
+    <figure class="figure d-flex col-6 mx-auto">
+    
+        <img src="./img/hmack.jpeg" alt="truc">
+
+        <figcaption class="figure-caption">Le plus souriant des tocards</figcaption>
+
+    </figure>
+
+
+{% endblock %}

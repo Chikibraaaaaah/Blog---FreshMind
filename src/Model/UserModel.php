@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Model;
-
 class UserModel extends MainModel
 {
+
+    private int $id;
+
     private string $userName;
 
     private string $email;
@@ -13,6 +15,8 @@ class UserModel extends MainModel
     private bool $role;
 
     private bool $approuved;
+
+    private string $imgUrl;
 
     private DateTime $createdAt;
 
