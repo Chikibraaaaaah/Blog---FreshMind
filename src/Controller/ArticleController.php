@@ -17,6 +17,12 @@ class ArticleController extends MainController
 
     private $relatedComments;
 
+    private $serviceController;
+
+    public function __construct(){
+        parent::__construct();
+        $this->serviceController = new ServiceController();
+    }
 
     /**
      * A description of the entire PHP function.
@@ -54,15 +60,14 @@ class ArticleController extends MainController
      */
     public function createMethod()
     {
-        $this->article["imgUrl"]    = new ServiceController();
-        $this->article              = [
-                                        "authorId"  => $this->getSession()["user"]["id"],
-                                        "title"     => $this->encodeString($this->getPost("title")),
-                                        "content"   => $this->encodeString($this->getPost("content")),
-                                        "imgUrl"    => $this->article["imgUrl"]->uploadFile(),
-                                        "imgAlt"    => $this->encodeString($this->getPost("alt")),
-                                        "createdAt" => date("Y-m-d H:i:s")
-                                    ];
+        $this->article  = [
+                "authorId"  => $this->getSession()["user"]["id"],
+                "title"     => $this->encodeString($this->getPost("title")),
+                "content"   => $this->encodeString($this->getPost("content")),
+                "imgUrl"    => $this->serviceController->uploadFile(),
+                "imgAlt"    => $this->encodeString($this->getPost("alt")),
+                "createdAt" => date("Y-m-d H:i:s")
+        ];
 
         ModelFactory::getModel("Article")->createData($this->article);
         $this->setSession([
@@ -119,21 +124,23 @@ class ArticleController extends MainController
     {
         $this->article = $this->getById();
 
-        if ($this->checkInputs() === TRUE) {
-            $updatedArticle                 = array_merge($this->article, $this->getPost());
-            $updatedArticle["imgAlt"]       = $this->encodeString($this->getPost("content"));
-            $updatedArticle["title"]        = $this->encodeString($updatedArticle["title"]);
-            $updatedArticle["content"]      = $this->encodeString($updatedArticle["content"]);
-            $updatedArticle["updatedAt"]    = date("Y-m-d H:i:s");
+        $newArticle = array_merge($this->article, $this->getPost());
 
-            ModelFactory::getModel("Article")->updateData((int) $updatedArticle["id"], $updatedArticle);
-            $this->setSession([
-                "alert"     => "success",
-                "message"   => "L'article a bien été mis à jour."
-            ]);
+        // if ($this->checkInputs() === TRUE) {
+        //     $updatedArticle                 = array_merge($this->article, $this->getPost());
+        //     $updatedArticle["imgAlt"]       = $this->encodeString($this->getPost("content"));
+        //     $updatedArticle["title"]        = $this->encodeString($updatedArticle["title"]);
+        //     $updatedArticle["content"]      = $this->encodeString($updatedArticle["content"]);
+        //     $updatedArticle["updatedAt"]    = date("Y-m-d H:i:s");
 
-            return $this->getMethod();
-        }
+        //     ModelFactory::getModel("Article")->updateData((int) $updatedArticle["id"], $updatedArticle);
+        //     $this->setSession([
+        //         "alert"     => "success",
+        //         "message"   => "L'article a bien été mis à jour."
+        //     ]);
+
+        //     $this->redirect("article", ["id" => $updatedArticle["id"]]);
+        // }
     }
 
 

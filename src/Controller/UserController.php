@@ -14,8 +14,6 @@ class UserController extends MainController
 
     private $user;
 
-    private $loggedUser;
-
     private $unapprouvedUsers = [];
 
     private $unapprouvedComments = [];
@@ -26,11 +24,11 @@ class UserController extends MainController
 
     private $destination;
 
-    private $email; 
-
     private $comments = [];
 
     private $articlesCommented = [];
+
+
 
 
     public function defaultMethod()
@@ -42,17 +40,17 @@ class UserController extends MainController
     {
         $this->user                 = $this->getUserById();
         $this->alert                = $this->getSession("alert") ?? [];
-        $this->loggedUser           = $this->getSession("user");
-        $this->adminController      = new AdminController();
-        $this->unapprouvedUsers     = $this->adminController->getUnapprouvedUsers();
-        $this->unapprouvedComments  = $this->adminController->getUnapprouvedComments();
+        $loggedUser           = $this->getSession("user");
+        $adminController      = new AdminController();
+        $this->unapprouvedUsers     = $adminController->getUnapprouvedUsers();
+        $this->unapprouvedComments  = $adminController->getUnapprouvedComments();
         $this->comments             = $this->getActivity()["comments"];
         $this->articlesCommented    = $this->getActivity()["articles"];
 
         return $this->twig->render("user/Profile.twig", [
             "user"                  => $this->user,
             "alert"                 => $this->alert,
-            "loggedUser"            => $this->loggedUser,
+            "loggedUser"            => $loggedUser,
             "method"                => "GET",
             "unapprouvedUsers"      => $this->unapprouvedUsers,
             "unapprouvedComments"   => $this->unapprouvedComments,
@@ -80,16 +78,7 @@ class UserController extends MainController
         $this->redirect("user_getUser", ["id" => $user["id"]]);
     }
 
-    public function editUserProfileMethod()
-    {
-        return $this->twig->render("user/userProfile.twig", [
-            "user"          => $this->getUserById(),
-            "alert"         => $this->getAlert() ?? [],
-            "loggedUser"    => $this->getSession("user"),
-            "method"        => "PUT"
-        ]);
-    }
-
+    
     public function updateUserMethod()
     {
         $this->user = $this->getUserById();
