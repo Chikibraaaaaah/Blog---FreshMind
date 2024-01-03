@@ -67,7 +67,6 @@ class AuthController extends MainController
         return $this->twig->render("auth/register.twig", ["alert" => $this->alert]);
     }
 
-
     public function resetPasswordMethod()
     {
         $this->alert =  $this->getAlert() ?? [];
@@ -121,6 +120,35 @@ class AuthController extends MainController
     }
 
     /**                                 Set methods                             */
+
+    public function loginMethod()
+    {
+        if($this->checkInputs() === FALSE) {
+            $this->redirect("auth_createAccount");
+        };
+
+        $this->user = $this->checkByEmail();
+
+        if( array_key_exists("id", $this->user) === TRUE) {
+            if (password_verify($this->getPost("password"), $this->user["password"]) === TRUE) {
+                $this->user["updatedAt"] = date("Y-m-d H:i:s");
+                ModelFactory::getModel("User")->updateData($this->user["id"], $this->user);
+                $this->setSession($this->user, true);
+                $this->setSession([
+                    "alert"     => "success",
+                    "message"   => "Connexion réussie."
+                ]);
+                $this->redirect("home");
+            }else{
+                $this->setSession([
+                    "alert"     => "danger",
+                    "message"   => "Mot de passe incorrect."
+                ]);
+                $this->redirect("auth_register");
+            }
+        }
+    }
+
 
     public function logoutMethod()
     {
