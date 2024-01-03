@@ -20,7 +20,7 @@ class MailerController extends MainController
 
     private $mailer;
 
-    private $email;
+    private $emailObject;
 
 
     /**
@@ -67,7 +67,7 @@ class MailerController extends MainController
        
        $this->template = $template;
 
-       $this->email->html($this->twig->render($this->template, ["form" => $this->form]));
+       $this->email->html($this->twig->render($this->template, ["params" => $this->params]));
        // // Add an "Attachment"
        // $email->attachFromPath('/path/to/example.txt');
        
@@ -85,10 +85,10 @@ class MailerController extends MainController
     * @return void
     */
    public function contactMethod(){
-       $this->form = $this->getPost();
-       $this->email["receiver"] = "alexisbateaux@gmail.com";
-       $this->email["subject"] = $this->form["precision"];
-       $this->email["content"] = $this->form["demande"];
+        $this->params = $this->getPost();
+        $this->email["receiver"] = "alexisbateaux@gmail.com";
+        $this->email["subject"] = $this->params["precision"];
+        $this->email["content"] = $this->params["demande"];
 
        $this->sendEmailMethod(
            $this->email["receiver"],
@@ -117,30 +117,41 @@ class MailerController extends MainController
 
 // }
 
-public function passwordForgetMethod(){
+    public function passwordForgetMethod(){
 
-    $email = $this->getPost("email");
-    $userFound = ModelFactory::getModel("User")->readData($email, "email");
+        $userController = new UserController();
+        $userFound      = $userController->getByEmail();
 
-    if( $userFound === FALSE) {
+        if( $userFound === FALSE) {
+            $this->setSession([
+                "alert"     => "danger",
+                "message"   => "Cet email est inconnu de nos services."
+            ]);
+
+            sleep(2);
+            $this->redirect("auth_createAcccount");
+        }
+        $auth           = new AuthController();
+        $newPassword    = $auth->generateNewPassWordMethod();
+        ModelFactory::getModel("User")->updateData($userFound["id"], ["password" => password_hash($newPassword, PASSWORD_DEFAULT)]);
+
+        $this->params = ["user" => $userFound, "newPassword" => $newPassword];
+
+        $this->sendEmailMethod(
+            $userFound["email"],
+            "Mot de passe oublie",
+            "Votre nouveau mot de passe est : ".$newPassword . "nous vous inviterons à le changer une fois connecté.",
+            "email/password.twig"
+        );
+
         $this->setSession([
-            "alert"     => "danger",
-            "message"   => "Cet email est inconnu de nos services."
+            "alert"     => "success",
+            "message"   => "Votre message a bien été envoyé !"
         ]);
 
-        sleep(2);
-        $this->redirect("auth_createAcccount");
+
+            $this->redirect("auth_register");
     }
-
-    $this->setSession([
-        "alert"     => "success",
-        "message"   => "Un email de récupération de mot de passe a été envoyé !"
-    ]);
-
-    sleep(2);
-    $this->redirect("auth_register");
-    
-}
 
 
 }

@@ -4,6 +4,7 @@
 namespace App\Controller;
 
 use App\Model\Factory\ModelFactory;
+
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mime\Email;
@@ -84,5 +85,8 @@ class AdminController extends MainController
 
         $this->redirect("user_getUser", ["id" => $myAccount["id"]]);
     }
+
+
+
 
 }

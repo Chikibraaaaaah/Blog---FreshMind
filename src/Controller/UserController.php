@@ -27,8 +27,6 @@ class UserController extends MainController
 
     private $email; 
 
-    private $form;
-
     private $comments = [];
 
     private $articlesCommented = [];

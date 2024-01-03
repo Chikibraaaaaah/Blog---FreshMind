@@ -25,13 +25,8 @@ class AuthController extends MainController
 
     private $mailer;
 
-    // public function __construct(MailerController $mailer){
 
-    //     parent::__construct();
-    //     $this->mailer = $mailer;
-
-    // }
-
+    /**                                 Render methods                             */
 
     /**
      * A description of the entire PHP function.
@@ -80,49 +75,6 @@ class AuthController extends MainController
         return $this->twig->render("auth/resetPassword.twig", ["alert" => $this->alert]);
     }
 
-    // Interactions functions
-
-    // Signup Function, mettre photo de profil par defaut  https://bootdey.com/img/Content/avatar/avatar7.png
-
-    public function loginMethod()
-    {
-        if($this->checkInputs() === FALSE) {
-            $this->redirect("auth_createAccount");
-        };
-
-        $this->user = $this->checkByEmail();
-
-        if(count($this->user) > 0) {
-            if (password_verify($this->getPost("password"), $this->user["password"]) === TRUE) {
-                $this->user["updatedAt"] = date("Y-m-d H:i:s");
-                ModelFactory::getModel("User")->updateData($this->user["id"], $this->user);
-                $this->setSession($this->user, true);
-                $this->setSession([
-                    "alert"     => "success",
-                    "message"   => "Connexion réussie."
-                ]);
-                $this->redirect("home");
-            }
-        }
-        $this->setSession([
-            "alert"     => "danger",
-            "message"   => "Cet email n'est pas connu de nos services."
-        ]);
-
-        $this->redirect("auth_createAccount");
-    }
-
-
-    public function logoutMethod()
-    {
-        $this->destroyGlobal();
-        $this->setSession([
-            "alert"     => "success",
-            "message"   => "A bientôt !"]
-        );
-        $this->redirect("home");
-    }
-
     public function preventDeleteMethod()
     {
         $this->loggedUser = $this->getSession("user");
@@ -131,24 +83,7 @@ class AuthController extends MainController
     }
 
 
-    /**
-     * Deletes the user account.
-     *
-     * @throws Some_Exception_Class In case of an error during deletion.
-     */
-    public function deleteAccountMethod()
-    {
-        $id = $this->getSession("user")["id"];
-
-        ModelFactory::getModel("User")->deleteData($id);
-        $this->destroyGlobal();
-        $this->setSession([
-            "alert"     => "success",
-            "message"   => "A bientôt !"
-        ]);
-        $this->redirect("home");
-    }
-
+    /**                             Check methods                          */
 
     private function checkPasswordsCorrespond()
     {
@@ -184,6 +119,38 @@ class AuthController extends MainController
 
         return $userFound;
     }
+
+    /**                                 Set methods                             */
+
+    public function logoutMethod()
+    {
+        $this->destroyGlobal();
+        $this->setSession([
+            "alert"     => "success",
+            "message"   => "A bientôt !"]
+        );
+        $this->redirect("home");
+    }
+
+
+    /**
+     * Deletes the user account.
+     *
+     * @throws Some_Exception_Class In case of an error during deletion.
+     */
+    public function deleteAccountMethod()
+    {
+        $id = $this->getSession("user")["id"];
+
+        ModelFactory::getModel("User")->deleteData($id);
+        $this->destroyGlobal();
+        $this->setSession([
+            "alert"     => "success",
+            "message"   => "A bientôt !"
+        ]);
+        $this->redirect("home");
+    }
+
 
     public function signupMethod()
     {
@@ -231,6 +198,14 @@ class AuthController extends MainController
         $userCreated = ModelFactory::getModel("User")->readData($newUser["email"], "email");
 
         return $userCreated;
+    }
+
+    public function generateNewPassWordMethod($length = 18){
+
+        $bytes = random_bytes($length);
+        $newPassword = base64_encode($bytes);
+
+        return $newPassword;
     }
 
 
