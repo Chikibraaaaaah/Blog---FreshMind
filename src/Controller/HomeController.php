@@ -51,7 +51,7 @@ class HomeController extends MainController
     {
         $this->loggedUser = $this->getSession("user");
 
-        return $this->twig->render('about.twig', ["loggedUser" => $this->loggedUser]);
+        return $this->twig->render('user/about.twig', ["loggedUser" => $this->loggedUser]);
     }
 
     public function contactMethod()
