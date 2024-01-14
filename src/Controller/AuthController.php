@@ -167,7 +167,8 @@ class AuthController extends MainController
 
         $this->user = $this->checkByEmail();
 
-        if( array_key_exists("id", $this->user) === TRUE) {
+
+        if ( gettype($this->user) === "array" && array_key_exists("id", $this->user) === TRUE) {
             if (password_verify($this->getPost("password"), $this->user["password"]) === TRUE) {
                 $this->user["updatedAt"] = date("Y-m-d H:i:s");
                 ModelFactory::getModel("User")->updateData($this->user["id"], $this->user);
@@ -184,7 +185,14 @@ class AuthController extends MainController
                 ]);
                 $this->redirect("auth_register");
             }
+        }else{
+            $this->setSession([
+                "alert"     => "danger",
+                "message"   => "Cet email n'est pas connu de nos services."
+            ]);
+            $this->redirect("auth_createAccount");
         }
+        
     }
 
 

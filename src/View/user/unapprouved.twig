@@ -13,7 +13,7 @@
                           <p class="card-text">{{ unapprouvedUser.email }}</p>
                       </div>
                       <a href="index.php?access=admin_approuveUser&id={{ unapprouvedUser.id }}" class="col-3 m-auto">Valider</a>
-                      <a href="index.php?access=admin_" class="col-3 m-auto">Refuser</a>
+                      <a href="index.php?access=admin_refuse" class="col-3 m-auto">Refuser</a>
                     </div>
                   </li>
                 {% endfor %}
@@ -36,7 +36,7 @@
                           <p class="card-text">{{ unapprouvedComment.content }}</p>
                         </div>
                         <a href="index.php?access=admin_approuveComment&id={{ unapprouvedComment.id }}" class="col-3 m-auto">Valider</a>
-                        <a href="index.php?access=admin_" class="col-3 m-auto">Refuser</a>
+                        <a href="index.php?access=admin_refuseComment&id={{ unapprouvedComment.id }}" class="col-3 m-auto">Refuser</a>
                       </div>
                     </li>
                   {% endfor %}

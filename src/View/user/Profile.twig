@@ -2,14 +2,13 @@
 
 {% block content %}
 
-{% block alert %}
-  {% if alert %}
-    <div class="alert alert-{{ alert.alert }} alert-dismissible fade show text-center" role="alert">
-      {{ alert.message }}
-    </div>
-  {% endif %}
-  
-{% endblock %}
+        
+      {% if alert %}
+        <div class="alert alert-{{ alert.alert }} col-10 mx-auto alert-dismissible fade show text-center" role="alert">
+          {{ alert.message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endif %}
 
   {% if method == "GET" %}
 
@@ -17,13 +16,7 @@
     <div class="col">
       <div class="container">
         <div class="main-body">
-        
-          {% if alert %}
-            <div class="alert alert-{{ alert.type }} alert-dismissible fade show text-center" role="alert">
-              {{ alert.message }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-          {% endif %}
+
 
           {% if loggedUser.role > 0 %}
             <div class="row mb-2">

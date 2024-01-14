@@ -38,10 +38,12 @@ class UserController extends MainController
 
     public function getUserMethod()
     {
+
+
         $this->user                 = $this->getUserById();
-        $this->alert                = $this->getSession("alert") ?? [];
-        $loggedUser           = $this->getSession("user");
-        $adminController      = new AdminController();
+        $this->alert                = $this->getAlert() ?? [];
+        $loggedUser                 = $this->getSession()["user"] ?? [];
+        $adminController            = new AdminController();
         $this->unapprouvedUsers     = $adminController->getUnapprouvedUsers();
         $this->unapprouvedComments  = $adminController->getUnapprouvedComments();
         $this->comments             = $this->getActivity()["comments"];
@@ -70,12 +72,27 @@ class UserController extends MainController
     public function updatePictureMethod()
     {
 
-        $service = new ServiceController();
-        $destination = $service->uploadFile();  
-        $user = $this->getSession("user");
-        ModelFactory::getModel("User")->updateData($user["id"], array_merge($user, ["imgUrl" => $destination]));
+        if (intval($this->getFiles()["img"]["size"]) > 0 ) {
 
-        $this->redirect("user_getUser", ["id" => $user["id"]]);
+            $service = new ServiceController();
+            $destination = $service->uploadFile();  
+            $user = $this->getSession("user");
+            ModelFactory::getModel("User")->updateData($user["id"], array_merge($user, ["imgUrl" => $destination]));
+    
+            $this->redirect("user_getUser", ["id" => $user["id"]]);
+           
+        }else{
+            $this->setSession([
+                "alert"     => "danger",
+                "message"   => "Veuillez choisir un fichier."
+            ]);
+            $this->redirect("user_getUser", [
+                "id" => $this->getSession("user")["id"]
+            ]);
+        }
+
+
+       
     }
 
     
