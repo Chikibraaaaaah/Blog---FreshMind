@@ -53,7 +53,6 @@ class ArticleController extends MainController
      */
     public function createMethod()
     {
-
         $serviceController = new ServiceController();
         $this->article  = [
                 "authorId"  => $this->getSession()["user"]["id"],

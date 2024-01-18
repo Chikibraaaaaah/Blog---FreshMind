@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
-use App\Model\Factory\ModelFactory;
+use App\Entity\ManagerEntity;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityRepository;
 
 /**
  * Class HomeController
@@ -36,7 +38,7 @@ class HomeController extends MainController
      */
     public function defaultMethod()
     {
-        $this->articles     = ModelFactory::getModel("Article")->listData();
+        // $this->articles     = EntityFactory::getModel("Article")->listData();
         $this->loggedUser   = $this->getSession("user") ?? [];
         $this->alert        = $this->getAlert() ?? [];
 

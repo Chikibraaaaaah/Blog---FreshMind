@@ -1,6 +1,10 @@
 <?php
 
 use Tracy\Debugger;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMSetup;
+
 
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -14,6 +18,3 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 $router->run();
-
-// var_dump($this->getEnv());
-// die();
