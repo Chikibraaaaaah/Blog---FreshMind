@@ -1,14 +1,11 @@
 <?php
 
-namespace App\Model\Entity;
+namespace App\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
-
-#[Entity]
-#[Table(name: "blog_user")]
+use Doctrine\ORM\Tools\Setup;
 
 
 /**
@@ -17,49 +14,47 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class UserEntity
 {
-
-    #[id]
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer", name="id")
      */
-    private int $id;
+    private $id;
 
     /**
      * @ORM\Column(type="string", name="userName")
      */
-    private string $userName;
+    private $userName;
 
     /**
      * @ORM\Column(type="string", name="email")
      */
-    private string $email;
+    private $email;
 
     /**
      * @ORM\Column(type="string", name="password")
      */
-    private string $password;
+    private $password;
 
     /**
      * @ORM\Column(type="boolean", name="role")
      */
-    private bool $role;
+    private $role;
 
     /**
      * @ORM\Column(type="boolean", name="approved")
      */
-    private bool $approved;
+    private $approved;
 
     /**
      * @ORM\Column(type="datetime", name="createdAt")
      */
-    private \DateTime $createdAt;
+    private $createdAt;
 
     /**
      * @ORM\Column(type="datetime", name="updatedAt")
      */
-    private \DateTime $updatedAt;
+    private $updatedAt;
 
 
 
@@ -71,7 +66,7 @@ class UserEntity
      *
      * @return int|null The ID of the object.
      */
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
@@ -82,7 +77,7 @@ class UserEntity
      *
      * @return string|null The user name.
      */
-    public function getUserName(): string
+    public function getUserName(): ?string
     {
         return $this->userName;
     }
@@ -104,7 +99,7 @@ class UserEntity
      *
      * @return string|null The email associated with the current object, or null if no email is set.
      */
-    public function getEmail(): string
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -127,7 +122,7 @@ class UserEntity
      *
      * @return string|null The password.
      */
-    public function getPassword(): string
+    public function getPassword(): ?string
     {
         return $this->password;
     }
@@ -150,7 +145,7 @@ class UserEntity
      *
      * @return bool|null The role of the object.
      */
-    public function getRole(): bool
+    public function getRole(): ?bool
     {
         return $this->role;
     }
@@ -173,7 +168,7 @@ class UserEntity
      *
      * @return ?bool The approval status of the object.
      */
-    public function isApproved(): bool
+    public function isApproved(): ?bool
     {
         return $this->approved;
     }
@@ -196,7 +191,7 @@ class UserEntity
      *
      * @return \DateTimeInterface|null The value of the `createdAt` property.
      */
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): ?\DateTimeInterface
     {
         return $this->createdAt;
     }
@@ -205,10 +200,10 @@ class UserEntity
     /**
      * Set the creation date of the object.
      *
-     * @param \DateTime $createdAt The creation date to set.
+     * @param \DateTimeInterface $createdAt The creation date to set.
      * @return void
      */
-    public function setCreatedAt(\DateTime $createdAt): void
+    public function setCreatedAt(\DateTimeInterface $createdAt): void
     {
         $this->createdAt = $createdAt;
     }
