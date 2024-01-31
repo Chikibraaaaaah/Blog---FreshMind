@@ -10,7 +10,7 @@ require __DIR__ . '/../vendor/autoload.php';
 
 Debugger::enable();
 
-// require "../config/config.php";
+require __DIR__ . '/../bootstrap.php';
 
 $router = new \App\Router();
 
@@ -18,6 +18,8 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
+var_dump($entityManager);
+die();
 
 
 $router->run();

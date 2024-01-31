@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+// require __DIR__ . '/../../bootstrap.php';
 
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -10,7 +11,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use App\Entity\ArticleEntity;
 
-require  './bin/bootstrap.php';
+
 
 
 /**
@@ -28,6 +29,7 @@ class HomeController extends MainController
     private $loggedUser = [];
 
 
+
     /**
      * Renders the View Home
      * @return string
@@ -42,7 +44,6 @@ class HomeController extends MainController
      */
     public function defaultMethod()
     {
-        $articleEntity = new ArticleEntity();
 
 
         // $this->articles     = EntityFactory::getModel("Article")->listData();
