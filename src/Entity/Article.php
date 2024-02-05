@@ -6,9 +6,9 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="blog_Article")
+ * @ORM\Table(name="articles")
  */
-class ArticleEntity
+class Article
 {
     /**
      * @ORM\Id
@@ -19,7 +19,7 @@ class ArticleEntity
 
 
     /** @ORM\Column(type="integer", name="authorId") 
-     * @ORM\ManyToOne(targetEntity="App\Entity\UserEntity")
+     * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(name="authorId", referencedColumnName="id")
     */
     private int $authorId;
@@ -30,7 +30,7 @@ class ArticleEntity
     private $title;
 
 
-    /** @ORM\Column(type="string", name="chapô") */
+    /** @ORM\Column(type="string", name="chapo") */
     private string $chapô;
 
     /**
@@ -65,7 +65,7 @@ class ArticleEntity
      *
      * @return int|null The ID of the object.
      */
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
@@ -76,7 +76,7 @@ class ArticleEntity
      *
      * @return string|null The title of the object, or null if it has no title.
      */
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -100,7 +100,7 @@ class ArticleEntity
      *
      * @return string|null The content.
      */
-    public function getContent(): ?string
+    public function getContent(): string
     {
         return $this->content;
     }
@@ -123,7 +123,7 @@ class ArticleEntity
      *
      * @return string|null The image URL.
      */
-    public function getImgUrl(): ?string
+    public function getImgUrl(): string
     {
         return $this->imgUrl;
     }
@@ -147,7 +147,7 @@ class ArticleEntity
      *
      * @return string|null The value of the imgAlt property.
      */
-    public function getImgAlt(): ?string
+    public function getImgAlt(): string
     {
         return $this->imgAlt;
     }
@@ -171,7 +171,7 @@ class ArticleEntity
      *
      * @return \DateTimeInterface|null The createdAt value or null if not set.
      */
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): \DateTimeInterface
     {
         return $this->createdAt;
     }
@@ -193,7 +193,7 @@ class ArticleEntity
      *
      * @return \DateTimeInterface|null The updatedAt property value.
      */
-    public function getUpdatedAt(): ?\DateTimeInterface
+    public function getUpdatedAt(): \DateTimeInterface
     {
         return $this->updatedAt;
     }

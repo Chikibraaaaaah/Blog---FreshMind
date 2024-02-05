@@ -2,17 +2,13 @@
 
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Tools\Setup;
-
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="blog_user")
+ * @ORM\Table(name="users")
  */
-class UserEntity
+class User
 {
     /**
      * @ORM\Id

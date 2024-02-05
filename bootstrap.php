@@ -13,16 +13,28 @@ $config = Setup::createAnnotationMetadataConfiguration($entityPath, $isDevMode);
 
 // Paramètres de connexion à la base de données
 $dbParams = [
-    'dbname' => 'blog',
-    'user' => 'root',
+    'driver'   => 'pdo_mysql',
+    'host'     => 'localhost',
+    'charset'  => 'utf8',
+    'user'     => 'root',
     'password' => 'root',
-    'host' => 'localhost',
-    'driver' => 'pdo_mysql',
+    'dbname'   => 'blog',
 ];
 
 // Connexion à la base de données et création du gestionnaire d'entités
 $entityManager = EntityManager::create($dbParams, $config);
+$connection = $entityManager->getConnection();
 
+// if ($connection->isConnected()) {
+//     echo "Connecté à la base de données.";
+// } else {
+//     echo "Non connecté à la base de données.";
+// }
 
+echo "<pre>";
+var_dump($connection);
+echo "</pre>";
 
-// return $entityManager;
+die();
+
+return $entityManager;
